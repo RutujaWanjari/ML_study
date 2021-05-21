@@ -28,4 +28,8 @@
 
    1. regular expression to remove all puntuations
    2. lower all words
-   3.
+   3. split into list
+   4. apply stemming to words not present in stopwords
+   5. Rejoin new list of words into single sentence and add to main corpus
+   6. Apply tokenization
+   7.
