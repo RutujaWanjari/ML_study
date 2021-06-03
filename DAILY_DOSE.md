@@ -37,7 +37,7 @@
     2. The reason being - purpose of feature_scaling is to normalize all the features, which means feature value = +/-3 (in standardization) and 0/1 (in normalization)
     3. As the dummy feature values are already 0 or 1, we do not perfrom feature scaling on them
 
-### 17/03/2021
+### 17/05/2021
 
 ##### Natural Language Processing
 
@@ -47,3 +47,17 @@
 4. CountVectorizer
 5. GuassianNaiveBayes classifier
 6. Predicting new data after model is trained
+
+### 22/03/2021
+
+##### Classification
+
+1. Linear algos - Logistic Regression, SVM
+2. Non-linear algos - KNN, Kernel SVM, Random Forest
+
+
+### 03/06/2021
+
+##### Logistic Regresssion
+
+1.
