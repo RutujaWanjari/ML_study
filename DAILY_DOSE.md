@@ -55,9 +55,14 @@
 1. Linear algos - Logistic Regression, SVM
 2. Non-linear algos - KNN, Kernel SVM, Random Forest
 
-
 ### 03/06/2021
 
 ##### Logistic Regresssion
 
-1.
+
+### 14/06/2021
+
+##### Kernel SVM
+
+1. Some dataset are clearly separated from each other and we can create a straight LINE between them. These cases need linear algos like LR, LinearSVM(kernel='linear')
+2. For non-linear datasets, we require non-linear algos like SVM(kernel='rbf'), K-nn, NN
