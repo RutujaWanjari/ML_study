@@ -61,7 +61,7 @@
 
 ### 14/06/2021
 
-####  SVM
+#### SVM
 
 1. Some dataset are clearly separated from each other and we can create a straight LINE between them. These cases need linear algos like LR, LinearSVM(kernel='linear')
 2. For non-linear datasets, we require non-linear algos like SVM(kernel='rbf'), K-nn, NN
@@ -72,9 +72,9 @@
 ##### Kernel SVM
 
 1. For kernel SVM, 1 technique for converting non-linear separable data to linear separable, add 1 more dimension to data
-6. In single dimension, data is separated by dot, in 2D data is separated by line, in 3D data is separated by a plane.
-7. The problem with this technique of adding 1 more dimension (mapping to a higher dimension) is that it is computationally very expensive because we need to create a mapping function/formula to convert n dimensional data to n+1 dimensional data.
-8. we can create a decision boundary with very complex non linear data with guassion rbf
+2. In single dimension, data is separated by dot, in 2D data is separated by line, in 3D data is separated by a plane.
+3. The problem with this technique of adding 1 more dimension (mapping to a higher dimension) is that it is computationally very expensive because we need to create a mapping function/formula to convert n dimensional data to n+1 dimensional data.
+4. we can create a decision boundary with very complex non linear data with guassion rbf
 
 ### 07/06/2021
 
@@ -86,5 +86,4 @@
 ##### Random Forest
 
 1. Ensemble Learning - Its a technique when more than 1 algos are commbined to get a higher performing algo
-2. Ex of random forest usecase - [hand motion detection](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/BodyPartRecognition.pdf)
-3.
+2. Ex of random forest usecase - [hand motion detection](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/BodyPartRecognition.pdf) and [video](https://www.microsoft.com/en-us/research/publication/real-time-human-pose-recognition-in-parts-from-a-single-depth-image/) of the same.
