@@ -82,4 +82,9 @@
 
 1. Decision Tree is a classification algorithm that was used in old days, but due to lots of better algos in new age it started fading out.
 2. Then there were some updates made into it and Decision Tree algo can now again have proved useful with names like Random Forest, Isolation Forest, Gradient Boosting.
+
+##### Random Forest
+
+1. Ensemble Learning - Its a technique when more than 1 algos are commbined to get a higher performing algo
+2. Ex of random forest usecase - [hand motion detection](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/BodyPartRecognition.pdf)
 3.
