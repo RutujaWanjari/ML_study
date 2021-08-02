@@ -87,3 +87,10 @@
 
 1. Ensemble Learning - Its a technique when more than 1 algos are commbined to get a higher performing algo
 2. Ex of random forest usecase - [hand motion detection](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/BodyPartRecognition.pdf) and [video](https://www.microsoft.com/en-us/research/publication/real-time-human-pose-recognition-in-parts-from-a-single-depth-image/) of the same.
+
+##### Classification Model Selection
+
+##### Metrics
+
+1. FP - We predicted it will occur, it actually did not
+2. FN - We predicted it won't occur, it actually did
