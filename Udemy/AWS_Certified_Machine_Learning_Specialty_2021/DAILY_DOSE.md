@@ -1,6 +1,8 @@
-## 28/07/2021
+# DATA ENGINEERING
 
-### Amazon s3
+##### 28/07/2021
+
+### AWS s3
 
 1. Max file size 5TB
 2. Allows any file type to store
@@ -20,7 +22,7 @@
     5. Security via **Tagging** s3 object via properties with Classification=PHI (Personal Health Information). Onlu right bucket policy or IAM policy can access such objects.
 12. **TODO - create a bucket with above features**
 
-## 29/07/2021 - 02/08/2021
+##### 29/07/2021 - 02/08/2021
 
 ### AWS Kinesis
 
@@ -75,3 +77,248 @@
       4. Data storage 1-10yrs
 5. Architecture - KS takes all data from IOT devices, metric logs, etc OR KF stores them to Redshift, s3, etc for deeper analytics, reporting etc --> KA analyzes data stored by KS or KF
 6. **Summary** - check kinesis.png
+
+##### 29/07/2021 - 02/08/2021
+
+### AWS Glue
+
+1. **Glue Data Catalog**
+   1. is a metadata repository for all the tables in your account
+   2. Schemas are automatically created, schemas are versioned
+   3. Integrated with athena, redshift, etc
+2. **Glue crawlers**
+   1. crawl through all your databases like dynamodb, s3, etc
+   2. infers schemas and partitions
+   3. works for json, parquet, csv, etc
+   4. we can run crawler on demand or on schedule
+   5. Based on how we will query s3 bucket, store data according beforehand.
+3. **Glue ETL**
+   1. Extract, Transform and Load, ETL allows you to clean data before analysis
+   2. Target can be RDS, glue data catalog, s3
+   3. Generate ETL code in python or spark
+   4. Fully managed, cost effective, pay only for resources used
+   5. Jobs are run on serverless spark platform
+   6. Glue scheduler is used to schedule jobs
+   7. Glue triggers are used to automate job runs based on event
+   8. **Transformations** - Glue ETL is used for transforming data. Transformation can be applied via -
+      1. **Bundled Transformations**
+         1. DropFields, DropNullFields - dropping null fields
+         2. Filter - filtering as per some criteria
+         3. join - join data
+         4. map - add or delete fields, perform external lookups
+      2. **Machine Learnig Transformations**
+         1. FindMatches ML - Find duplicate data even if the data are not perfectly matching
+      3. Format conversions - csv, json, orc, parquet, xml
+      4. Apache spark transformations (ex- k-means)
+
+##### 05/08/2021
+
+### AWS Athena
+
+1. Querying tool for s3
+2. Requirement - s3 data should be available in AWS glue in the form of tables
+
+### AWS Datastores
+
+1. Redshift -
+   1. datawareshouse technology
+   2. massively parallel sql queries to run, then use Redshift. (OLAP - Online Analytical Processing)
+   3. load data from s3 OR query it from s3 using redshift spectrum
+   4. provision servers in advance
+   5. Data is organized in columns or tables
+   6. main purpose is to do analytics
+2. RDS and Aurora-
+   1. These are relational datastores
+   2. OLTP - Online Transaction Processing
+   3. provision servers in advance
+   4. Data is orgainized in row
+   5. main purpose is to to store data
+3. Dynamodb -
+   1. NoSDL - NotOnlySQL (some systems stores sql plus document data) or Not SQL (not sql only document data is stores)
+   2. Useful to store ml outputs
+   3. serverless
+   4. provisioned read/write capacity
+4. s3 -
+   1. object storage
+   2. serverless
+   3. infite storage
+   4. integration with almost all aws services
+5. elastic search -
+   1. indexing of data
+   2. provision in advance
+   3. search among data points
+   4. useful for analytics
+6. elastic cache
+   1. cahing mechanism
+
+### AWS Data pipelines
+
+1. ETL sesrvice
+2. move data from one source to other
+3. integration with Redshift, RDS, s3, Dynamodb, EMR
+4. manage task dependency
+5. retries and notifies on failure
+6. highly available service
+
+##### 06/08/2021
+
+### AWS Batch
+
+1. Runs job as docker images
+2. Used for performing computational or etl or any kind of job in batches
+3. No need of provisioning from user. Dynamically provisioned
+4. All resources like ec2 are dynamically created as per the job
+5. User does not have to manage clusters, it is serverless
+6. Schedule batch jobs using cloudwatch or prchestrate batch jobs using AWS step functions
+
+### AWS Database Migration Service
+
+1. Used for migrating database safely
+2. service runs on ec2 instance
+3. It will just replicate the data from source to destination
+4. Source database will remain accessible while the migration service is running and also afterwards
+5. Homogenous migration - oracle to oracle
+6. Heterogenous migration - microsoft server to aurora
+
+### AWS Step Function
+
+1. Used for visualizing all the steps to perform inyour application
+2. It will show you flowchart with knowledge of which aws service to use at which point in building your ML application
+3. Used to design workflows
+4. advanced error handling and retry mechanism out of the code
+5. audit of the history of workflows
+6. ability to wait for an arbitary amount of time
+7. Max execution time of state machine is 1 year
+
+# EXPLORATORY DATA ANALYSIS
+
+##### 07/08/2021
+
+### Pandas
+
+1. A library to load, analyze and help clean the data
+2. Deals in dataframes(2D like table) and series(1D like array)
+3. Ex - **df['country'].value_counts()** - gives name of country and it's total count in the data
+4. Ex - df = pd.read_csv('temp.txt', na_values=[''])
+5. Ex- **df.describe()**
+6. Interoperates with numpy. Mostly the data is given in terms of numpy arrays to train or predict. Ex - **df['query'].values() return numpy query data**
+
+### Matplotlib
+
+1. Used for showcasing the outputs in charts and graphs
+2. **Seaborn** lib is built over matplotlib, better to use now a days
+3. Heatmap, Jointmap
+
+### Scikit learn
+
+### Jupyter Notebook
+
+### Keras
+
+1. Keras has a way to convert keras model into scikitlearn model and then train the data
+2. This is done so that we can use scikitlearns cross_val_score()
+   1. cross_val_score() randomly separates our data into train and validation
+   2. Above step is done multiple times with param cv.
+
+### Types of Data
+
+1. **Numerical**
+   1. numbers or integers like age, stock price, no. of requests on webpage
+   2. Types -
+      1. **Discrete** - no. of purchases made by me in a year, no. of attacks I got on my website this month
+      2. **Continuous** - rainfall
+2. **Categorical**
+   1. yes or no, fruit classes
+   2. Often one class has no corelation with other class. Like we cannot say apply is better/sweeter than orange. They are not comparable in that sense.
+   3. Often this is converted into numerical in machine learning applications
+3. **Ordinal**
+   1. Mixture of of categorical and numerical
+   2. Ex - star ratings (1-5 are numerical categories), also these numbers have corelation. Like 5 is better than 4.
+
+### Data Distributions
+
+1. Normal Distribution - continuous data
+2. poisson distribution has Probability Mass Funciton - discrete data
+3. Binomial Distribution - discrete data
+   1. Distrbute data in such a way where the results is from only 2 case
+   2. Ex - coin toss
+4. Bernouli Distribution - discrete data
+   1. Special case of Binomial distribution, consists of single trial
+   2. Ex - coint toss only once
+   3. Hence Binomial distribution can be considered as the collection of Bernouli distribution
+
+### Time series analysis
+
+1. Siries of datapoints over time
+2. discrete samples taken over dicrete point of time
+3. Seasonality - its a feature in your data that shows changes as per seasons
+4. Trends - its a feature in your data that shows patterns as per time
+5. Noise - changes/variations that are random in nature
+6. **seasonality + trends + noise = TimeSeries**  --> use additive models because in this seasonal variation is constant
+7. seasonality * trends * noise - trends = amplifies seasonlity and noise  --> use multiplicative models because seasonal variation increases as per trends
+
+### AWS Athena
+
+1. A querying service over s3
+2. Data is not loaded from s3, it stays in s3
+3. serverless
+4. Works on structured, unstructured, semistructured data
+5. Athena uses Presto technology underneath
+6. Supportin data fromats - csv, orc, parquet, json, avro
+7. Ex applications - adhoc querying of weblogs, analyzing cloudtrail/cloudwatch logs in s3
+8. Integration with jupyter, quicksight
+9. $5 per TB scanned.
+10. Cost can be reduced further if we use columnar data (orc, parquet) and also compressing data is useful
+11. Transport Layer Security (TLS) between data transfer to/from athena and s3
+12. Athena is NOT for visualization (use quicksight), also NOT for ETL (use glue ETL)
+
+### AWS Quicksight
+
+1. Fast and easy cloud-powered business analytics service
+2. For visualization and adhoc analysis on all levels, not totally developer oriented
+3. serverless
+4. pay as you use
+5. quickly get business insights from adhoc data on browser/mobile anywhere
+6. Data sources - s3 (csv, etc), redshift, dynamodb, rds, athena, or any data sitting on ec2, or any log sitting in ec2 or s3
+7. Data preparation aloows simple ETL not all ETL like glue
+8. Quicksight is built over technology named **Spice**
+9. spice is a superfast, parallel, in-memory calculation engine
+10. It uses in-memory columnar storage, accelerates interactive queries on large dataset
+11. highly available, scalable, durable, 10gb spice per user
+12. Machine Learning feature named **Insights**
+13. Machine Learning Insights - anaomaly detection, forecasting, autonarratives
+14. ML insights uses inbuilt model named random cut forest derived from random forest
+15. Quicksight is very costly, hence rarely used
+16. Quicksight visual types -, barchart, pie graph, line graph, autograph, treemap, heatmap, scatter plot, pivot tables, stories
+
+## 12/08/2021
+
+### AWS Elastic MapReduce (EMR)
+
+1. EMR is built over hadoop, runs on ec2
+2. Preinstalled techs come with this like - spark, flink, presto, hive, hbase
+3. Also includes EMR notebooks running on EMR clusters
+4. Used when we have to map and reduce massive dataset before training them
+5. EMR provides methods to distribute loads while processing the data paralelly
+6. An EMR cluster consists of nodes -
+   1. **Master node** - compulsary node, manages the cluster, single ec2 instance, monitors health of the cluster, instances used are - m4.xlarge if nodes > 50, else m4.large if nodes < 50
+   2. **Code node** - compulsary node when the cluster is multi layered, runs tasks, hosts hdfs data, can be scaled up/down but with risk, instances used are - m4.large is good for performance, t2.medium for external dependency apps like webcrawler, cluster computing instances if NLP work
+   3. **Task node** - optional node, runs task, does not host data, no risk of data while scaling, only used for computational purpose, good for spot instances. (instances can be removed/added), instance same as code node plus spot instances
+7. 2 types - **transient cluster**(turn off cluster after task completion, used when task set is predefined) vs **long running cluster**(used when we dont know what to do and expect, also used in interatcive applications, terminate cluster manually after done.)
+8. Integration with ec2, cloudwatch, vpc, s3, cloudtrail, IAM, Data pipeline
+9. **EMR storage** - hdfs, emrfs (s3 or dynamo), local file system, ebs (elastic block store)
+10. EMR charges by the hour, plus ec2 charges
+11. **Hadoop** consistes of -
+    1. HDFS - Distributed File system, stores multpile copies of data in distributed clusters or node so that data is not lost
+    2. YARN - Yet another resource negotiator, centrally manages cluster
+    3. MapReduce - software framework to easily write vast amount of data paralally, icludes mapper function(used for transforming; mapping and preparing data) and reduce function(used for compacting and aggregating data into one whole dataset)
+    4. Spark - These days Apache spark has largely taken the place of mapreduce, faster alternative to mapreduce, in-memory caching, more smart than mapreduce for data processing, spped, code reuse for batch processing and ml processing
+    5. Spark components - Spark streaming, Spark sql, MLlib, GraphX
+    6. **Spark MLlib** introduces ml libraries, data is stored distributedly and scalable, parallel processing.
+    7. Models include - classification (NaiveBayes, LogisticRegression), Regression, Decision Tress, Clustering (Kmeans), Recommendation Engine (ALS), Topic Modellling (LDA), Ml workflow utilities (pipeline, feature transformation), SVD,PCS, statistics
+    8. Spark streaming can be integrated with Kinesis
+    9. Spark + Zepplin allows you to run code in notebook env, with all data science tools needed
+    10. Spark Notebook, similar concept like above but more integrated with AWS, notebooks are backedup in s3, vps, accessed only via AWS ocnsole, integrated with anaconda, pyspark, python, sparksql, scala
+    11. These are all hosted outside EMR, no additional charges for EMR users
+    12. EMR secuirty - IAM policies, IAM roles, Kerberos, SSH
+    13.
