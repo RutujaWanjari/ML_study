@@ -321,4 +321,52 @@
     10. Spark Notebook, similar concept like above but more integrated with AWS, notebooks are backedup in s3, vps, accessed only via AWS ocnsole, integrated with anaconda, pyspark, python, sparksql, scala
     11. These are all hosted outside EMR, no additional charges for EMR users
     12. EMR secuirty - IAM policies, IAM roles, Kerberos, SSH
-    13.
+
+## 17/08/2021
+
+### Feature Engineering
+
+1. Feature engineering refers to trimming down our features or create new features or transform some features as required by our problem statement
+2. Features are nothing but the attributes of our data to be trained. For ex - if the problem is to detect anomalies in the web requests, then the features would be timestamp, url, ip_address, countrycode, user_agent, etc
+3. We cannot just throw raw data to model and expect good results; we need to transform our features using scaling, normalization, handling missing data, handle dimensionality, etc
+4. Andrew Ng- "Applied machine learning is basically feature engineering"
+5. **Why we do Feature engineering - Because we have curse of dimensionality**
+   1. Each feature is an axis, which means 1 dimension.
+   2. Now if we say, y is an output(salary) and x is an input(age)., it means the dimesion is 2
+   3. But when we add more features like yrs of experience, designation, location, etc, axis increases and hence the dimension increases.
+   4. More the dimensions, sparse the relevant information to predict something, more the space to look for proper solution. This results in bad output.
+   5. **To reduce dimesion, we have PCA and K-Means**
+6. Ways of Feature Engineering -
+   1. **Imputation of Missing Data**
+      1. **Mean Replacement** - df.fillna(df.mean())
+         1. Fill mean values if data is missing in numerical features
+         2. Median is better than mean, if we have outliers in our data. For ex, some people won't specify their salary in person data, then it is outliers, don't use mean use median.
+         3. Fast and easy
+         4. But, works only on column data, hence misses corelation with row data. Also does not work on categorical data
+         5. Not very accurate
+      2. **Dropping** - df.dropna()
+         1. Drops data(row) which has a missing value for any of the coulmn/feature
+         2. Not a viable soultion as we might loose imp data
+         3. Hence this technique is used only when we have short time, when dropping this data doesn't bias our data
+      3. **Machine Learning**
+         1. K-means - find most similar(k-nearest) rows and average their values, good for numerical data, not good for categorical data
+         2. Deep learning - build ml model to impute data, good for numerical plus categorical data, but high in computation
+         3. Regression - find linear/nonlinear relationship between missing features and other features, MICE - Multiple Imputation by Chained Equations
+   2. **Question** Which is the best way to impute missing data?
+      Best is to get more complete data, If not then Machine learning techniques like - best is MICE, then Deep Learning, then K-means
+   3. **Handling Unbalanced Data**
+      1. Unbalanced means large difference between positive and negative data.
+      2. For ex- fraud detection will have less data for frauds and more data for normal transactions.
+      3. Also, positive does not mean normal transactions, it means the thing you are trying to detect has happend. If you are detecting fraud, then fraud is positive, if you are detecting normal transaction, then that is positive. This is very inportant in understanding confusion matrix.
+      4. **Oversampling** -
+         1. duplicate values randomly in lesser class data
+      5. **Undersampling** -
+         1. not the best practice, as we might lose important information
+      6. **SMOTE** -
+         1. Synthetic Minority Oversampling Technique
+         2. Artificially create new samples using K-nn
+         3. Knn will find the nearest neighbour and just get mean of the result
+         4. It generates new data for undersampled class and reduce data fro oversampled class
+      7. **Adjust Threshold**
+         1. Mostly works in cases where we get prediction score, this score helps to find a particular threshold beyond which we can say fraud or not fraud.
+         2. For ex - if we want to reduce FP, increase threshold. It will guarantee reduced FPs but might increase FNs.
