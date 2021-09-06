@@ -370,3 +370,160 @@
       7. **Adjust Threshold**
          1. Mostly works in cases where we get prediction score, this score helps to find a particular threshold beyond which we can say fraud or not fraud.
          2. For ex - if we want to reduce FP, increase threshold. It will guarantee reduced FPs but might increase FNs.
+
+## 19/08/21
+
+### Handling OUTLIERS
+
+![variance and standard deviation](./images/variance_and_std_deviation.png)
+
+1. Variance - measures how spread-out the data is.
+
+   1. Formula explanation - average of squared differences from the mean of overall data
+   2. Example: What is the variance of the data set (1, 4, 5, 4, 8)?
+      * First find the mean: (1+4+5+4+8)/5 = **4.4**
+      * Now find the differences from the mean: (-3.4, -0.4, 0.6, -0.4, 3.6)
+      * Find the squared differences: (11.56, 0.16, 0.36, 0.16, 12.96)
+      * Find the average of the squared differences:
+      * 07 (11.56 + 0.16 + 0.36 + 0.16 + 12.96) /5 = 5.04
+2. Standard Deviation - used to identify outliers
+
+   1. Formula explanation - square root of variance
+   2. With above example -
+      * Standard deviation of (1, 4, 5, 4, 8) is **2.24**
+   3. So the data points that lie more than 1 standard deviation far from mean is considred as outlier
+   4. Example - mena(4.4) +/- std(2.24) = **2.16/6.64**
+   5. Hence datapoints 1 and 8 are outliers
+   6. We can use more than 1 sigma to +/- with the mean to identify outliers
+   7. **The important business logic to think is how many sigmas away from the mean should be our threshold value to identify outliers.**
+   8. Based on problem statement, outliers ccan be removed from training data
+   9. AWS provides Random Cut Forest algorithm for outlier detection widely used, integrated with kinesis analytics, sagemaker, quicksight, etc
+   10. Python code - np.mean, np.median, np.std, etc
+
+### Binning
+
+1. Binning refers to converting numerical data into categorical like age.
+2. Instead of using all values of age field, we can caonvert into categories of 1-20, 21-40, 41-60, etc
+3. Above categories can be then one hot encoded to 0, 1, 2, 3
+4. This technique is used when we have uncertaininity in exact measurements of datapoints.
+5. Also used when the specificity of datapoint is not very helpful in training model.
+6. Quantile binning is useful to equally balanced out the one hot classes. It automatically picks up the min-max value for creating bins or categories
+
+### Transforming
+
+1. Sometimes model finds hard to understand non-linear features, hence they need to be transformed to linear features
+2. For example, features which have exponential trends may benefit from logarithmic transform
+
+### Encoding
+
+1. One hot encoding
+2. Label encoding
+
+### Scaling/Normalizing
+
+1. Most models prefer their feature data to be distributed around 0, mostly neural networks
+2. Most models require atleast their data should be scaled to comarable values, otherwise features with higher magnitude will attract more focus than other, for example salary feature might get more attention than age feature, if not scaled
+3. MinmaxScaler (-3 to 3)
+4. Remember to scale while prediction too
+
+### Shuffling
+
+1. Randomly shuffle data before training
+
+### Sagemaker Ground Truth
+
+1. It's a service provided by AWS which manages and deligates your task of finding new data or features for your data or even label your data to other humans
+2. Also, in case of labeling task, it starts creating a model parallely which learns to label your data based on what other humans labelled, and with time it starrts to label by itself and only send confusing data to humans for labelling. This saves cost upto 70%.
+3. Who are these humans - mechanical turk or your own internal team or professional labelling companies
+4. Instead of humans we can also use AWS services -
+   1. AWS Rekognition - Image processing and image classification
+   2. AWS comprehend - Text analysis, topic modelling, classification based on topic or sentiments
+   3. Any pretrained model or unsupervised technique that might be useful
+
+
+## 06/09/2021
+
+### Modeling
+
+### Deep Learning
+
+1. Neural Networks
+2. Deals with understanding how our brains work.
+3. There are numerous amount of neurons interconnected to each other in layers.
+4. Initial layer takes input from outside world like senses (smell, touch, vision, sound, etc) and passes on its output or understanding to other layer and so on till we reach a certain conclusion.
+5. Each layer consistes of multiple neurons
+6. More the complexity better the conciousness
+7. Although increasing complexity do not guarantee better accuracy or PR curve
+8. In the brain, layers are stacked as **cortical columns** consisting of numerous mini-columns which again consists of numerous hyper columns
+9. NNs learn paralelly
+10. Popular frameworks of NN used by AWS - Mxnet and tensorflow and Keras
+11. GPU is used more than CPU for NN because - GPU architecture is similar to cortical columns, also they do parallel computation faster than CPU
+12. Keras (some info)-
+    1. Dense -(number of neurons, input_dimension(total features/inputs))
+    2. Dropout - (for regularization)
+13. Types of Neural Networks
+    1. Feed Forward NN (simple, no backpropagation)
+    2. Convolutional NN (mostly used for images as they cal deal 2D datasets. (If stop sign in diagram, use CNN; they use backpropagation))
+    3. Recurrent NN (deals with sequences of time or anytype of data that has order in it. stock prices, sentence translation, LSTM, GRU)
+
+### Activation Functions
+
+1. Activation Functions trigger the neuron and define the output of it based on the input given to it.
+2. **Linear activation function** -
+   1. outputs whatever the input is
+   2. As it only mirrors the input there is no point of having linear activation function in more than 1 layer
+   3. Does not backpropagate, hence does not learn anything new using any kind of optimization.
+3. **Binary Step activation function** -
+   1. Outputs positive value if input=True, else outputs negative value
+   2. It does not handle multiple classification
+   3. Does not do mathematically well, as calculating derivative of straight line might cause some imbalance
+4. **Non liner activation functions** -
+   1. Create complex mappings between inputs and outputs
+   2. Allows backpropagation
+   3. Multiple classification handled
+   4. Allow multiple layers
+   5. **Sigmoid / TanH / Logistic**
+      1. Nice and smooth as the derivatives can be calculated
+      2. Scales everything between 0 to 1 (Sigmoid/Logistic)
+      3. Scales everything between -1 to 1 (TanH)
+      4. TanH is more commonly used than other two, as it is good to avverage everything around 0
+      5. Changes very slowly for very high values or very low values, This causes vanishing gradient problem
+      6. Computationally expensive
+   6. **Rectified Linear Unit (ReLU)**
+      1. Answer to above problematic functions
+      2. When input is 0 or negative, output is 0, when input is present, output is input powered
+      3. When input is 0 or negative, the function behaves as linear function and hence we face all linear funciton problems
+      4. When this happens for most of neurons, they start dying, occurring Dying ReLU problem
+      5. Easy and computationally fast
+   7. **Leaky ReLU**
+      1. Solves dying ReLU problem bby outputting a small slope of negative output when the input is 0 or negative, instead of flatly outputting 0.
+      2. Problem is how much slope is best cannot be identified.
+      3. Easy and computationaly fast
+   8. **Parametric ReLU (PReLU)**
+      1. Solves Leaky ReLU problem
+      2. It works as Leaky ReLU, although the slope for negative values is learned via backpropagation
+      3. Complicated
+   9. **Exponential Linear Unit (ELU)**
+   10. **Swish**
+       1. Developed by Google
+       2. Solves all the problems of all the above activation funcitons
+       3. Easy and fast
+       4. Mostly good when NN layers are above 40
+   11. **Maxout**
+       1. outputs maximum of all the inputs
+       2. doubles the parameters that need to be trained which makes funciton impractical and complicated
+   12. **Softmax**
+       1. Used on final output layer of a multiple classification problem
+       2. converts outputs to probabilities of each class
+       3. it can output only 1 label from each neuron (unlike sigmoid)
+   13. **When to use which activation function**
+       1. Multiple classification problem - softmax at the last layer
+       2. RNN - tanh
+       3. For everything else -
+          1. Start with ReLU
+          2. If ReLU does not work, go with Leaky ReLU
+          3. If above does not work, go with PReLU, Maxout
+          4. Swish should be used for deep networks
+          5. Sigmoid is used when we need multiple c outputs per neuron
+
+### Convolutional Neural Network (CNN)
