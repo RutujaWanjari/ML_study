@@ -440,7 +440,6 @@
    2. AWS comprehend - Text analysis, topic modelling, classification based on topic or sentiments
    3. Any pretrained model or unsupervised technique that might be useful
 
-
 ## 06/09/2021
 
 ### Modeling
@@ -527,3 +526,93 @@
           5. Sigmoid is used when we need multiple c outputs per neuron
 
 ### Convolutional Neural Network (CNN)
+
+1. Inspired by the biology of visual cortex
+2. Deals with understanding how the brain processes images from our retina
+3. CNN is used when we do not know features. CNN can sccan the data and locate the features to train. This is known as **feature location invariant**
+4. Convolution = breaking a piece into little chunks
+5. Used for -
+   1. Finding features in images
+   2. Image Processing and Image classification
+   3. Sentence classification
+   4. Machine translation
+   5. Sentimment analysis
+6. Consists of -
+   1. subsampling - local receptive fields (square shaped) are the the group of neurons that only respond to a part of what our eyes see
+   2. convolution - breaking whole picture into small parts, overlapping each other to cover entire picture
+   3. While dealing whith colored images, multiply everything by 3 for red, green, blue
+7. So CNN means - breaking data into smaller parts, assembling them according to shapes, size, etc, analyzing them, detecting patterns.
+8. CNN with KEras and Tensorflow
+   1. Source data must of appropriate dimensions - length x width x color channels
+   2. Conv Layer -> Conv1D - textual data, Conv2D - image data, Conv3D - 3d volumetric data
+   3. Maxpooling Layer -> - as cnn is very compute intensive, we need to downsie our data by getting only the maximum value in 1 block/convlution
+   4. Flatten Layer -> At one point in our nn, we will have to pass our data in 1D to the neurons or perceptrons. This is done by this layer
+   5. Typical algo we follow ->
+      1. Conv2D
+      2. Maxpooling
+      3. Dropout
+      4. Flatten
+      5. Dropout
+      6. Dense (hidden layer of neurons)
+      7. Droput
+      8. Softmax (get final output at last layer)
+9. CNNs are very resource intensive - cpu, gpu and ram
+10. Lots of hyperparams, hence tunning becomes hard
+11. Getting data is hardest, storing and accessing it
+12. CNN param tunning problems can be resolved by specialized CNN architectures like -
+    1. **LeNet-5** -> handwriting recognition
+    2. **AlexNet** -> image classification, deeper than LeNEt
+    3. **GoogLeNet** -> deeper than ALexNet, bettter performance, includes interception modules (ie group of convolution layers)
+    4. **ResNet (Residual Network)** -> even deeper, maintains performance using skip connections. Best than above
+
+### Recurrent Neural Network
+
+1. Deals with sequence of time.
+2. Works with sequential data, like waflogs coming overtime
+3. sentence are also sequence of words, might be useful in image captionaing, machine generated music (musical notes are squence)
+4. IN RNN, neurons ouput is fed forward and also fed back to itself, so that when next time the input arrives, it can be summed with latest output
+5. Hence each neuron also acts as memory cell
+6. THis workflow provides better learning with time
+7. A layer of recurrent neurons -> sending output of 1 layer back to all input neurons of this layer
+8. RNN can deal with 4 different combinations (topologies)-
+   1. **Sequence to Sequence** -> ex- input is today's stock, output is future stock
+   2. **Sequence to Vector** -> ex - input is sentence, output is sentiment
+   3. **Vector to Sequence** -> ex - input is image(vector representation), output is description
+   4. **Encoder - Deccoder** -> ex - input is sequence (french lang), convert to vector, output is sequence(english lang)
+9. RNN can become very compute intensive due to back-propagation strategy
+10. Due back-propagation, training time increases to a very high level. Hence we need to limit backpropagation with technique called - Truncated Backpropagation Through Time - limit number of backpropagation
+11. RNN might get problematic when we dilute current neuron with it's output overtime. For ex, in sentence structure learning, words at the begining of sentence might have more wightage than newer ones. At such times, backpropagation is harmful.
+12. For above problems, solution is **LSTM** (Long Short Term Memory). It maintains separate short term and long term states in a complex way.
+13. Use LSTM when we have important data or features in the beginning. Example sentence.
+14. **GRU** (Gated Recurrent Unit), optimized and simplified LSTM, better permorming, more used than LSTM
+15. Training RNN is harder than CNN, very sensitive to topologies and hyperparams, resource intensive, if built wrong, after long training also it will give wrong results.
+
+
+### Deep Learning on EC2 / EMR
+
+1. EMR supports Apache MXNet and GPU instance types
+2. P3, P2, G3
+3. Sagemaker
+
+### Tuning Neural Networks
+
+1. **Learning rate**
+   1. NN are trained using gradient descent, the difference between 2 points or steeps or descent is the learning rate
+   2. Gradient descent is the slope or minimum path to reach a particular milestone.
+   3. For many epochs (steps) the training happens where we try to reduce the cost function based on weights. In the beginning we start with random weight.
+   4. **Too high LR means, we might lose optimal solution**
+   5. **Too low LR means, we might have to use lots of epochs to reach optimal solution**
+2. **Batch size**
+   1. number of training samples used within 1 epoch
+   2. **small batch size does not get stuck in local minima (area between slope and rise)**
+   3. **large batch size can converge into wrong solution**
+
+### Regularization techniques in NN
+
+1. Regularization is any technique that prevents overfitting
+2. Overfitting is overlearning or mugging up, thus unable to understand realworld or new dataset
+3. Overfitting happens because of - too many neurons, too many epochs, too many layers, use of nn instead of simpler models like LR.
+4. Simplest solution is **use less neurons/epochs/ use simpler model**
+5. If NN is used, then we can use the technique called **Dropout**
+6. Dropout removes some of the neurons giving more randomness to learning
+7. Another solution can be **early stopping**, stop the nn at some epoch depending on validation accuracy (not on training accuracy)
