@@ -22,9 +22,9 @@
     5. Security via **Tagging** s3 object via properties with Classification=PHI (Personal Health Information). Onlu right bucket policy or IAM policy can access such objects.
 12. **TODO - create a bucket with above features**
 
-##### 29/07/2021 - 02/08/2021
-
 ### AWS Kinesis
+
+##### 29/07/2021 - 02/08/2021
 
 1. Kinesis is a streaming servicce, an alternative to Apache Kafka
 2. Compatible with stream processing framework like Spark, NiFi, etc
@@ -78,9 +78,9 @@
 5. Architecture - KS takes all data from IOT devices, metric logs, etc OR KF stores them to Redshift, s3, etc for deeper analytics, reporting etc --> KA analyzes data stored by KS or KF
 6. **Summary** - check kinesis.png
 
-##### 29/07/2021 - 02/08/2021
-
 ### AWS Glue
+
+##### 29/07/2021 - 02/08/2021
 
 1. **Glue Data Catalog**
    1. is a metadata repository for all the tables in your account
@@ -111,9 +111,9 @@
       3. Format conversions - csv, json, orc, parquet, xml
       4. Apache spark transformations (ex- k-means)
 
-##### 05/08/2021
-
 ### AWS Athena
+
+##### 05/08/2021
 
 1. Querying tool for s3
 2. Requirement - s3 data should be available in AWS glue in the form of tables
@@ -160,9 +160,9 @@
 5. retries and notifies on failure
 6. highly available service
 
-##### 06/08/2021
-
 ### AWS Batch
+
+##### 06/08/2021
 
 1. Runs job as docker images
 2. Used for performing computational or etl or any kind of job in batches
@@ -291,9 +291,9 @@
 15. Quicksight is very costly, hence rarely used
 16. Quicksight visual types -, barchart, pie graph, line graph, autograph, treemap, heatmap, scatter plot, pivot tables, stories
 
-## 12/08/2021
-
 ### AWS Elastic MapReduce (EMR)
+
+##### 12/08/2021
 
 1. EMR is built over hadoop, runs on ec2
 2. Preinstalled techs come with this like - spark, flink, presto, hive, hbase
@@ -322,9 +322,9 @@
     11. These are all hosted outside EMR, no additional charges for EMR users
     12. EMR secuirty - IAM policies, IAM roles, Kerberos, SSH
 
-## 17/08/2021
-
 ### Feature Engineering
+
+##### 17/08/2021
 
 1. Feature engineering refers to trimming down our features or create new features or transform some features as required by our problem statement
 2. Features are nothing but the attributes of our data to be trained. For ex - if the problem is to detect anomalies in the web requests, then the features would be timestamp, url, ip_address, countrycode, user_agent, etc
@@ -371,9 +371,9 @@
          1. Mostly works in cases where we get prediction score, this score helps to find a particular threshold beyond which we can say fraud or not fraud.
          2. For ex - if we want to reduce FP, increase threshold. It will guarantee reduced FPs but might increase FNs.
 
-## 19/08/21
-
 ### Handling OUTLIERS
+
+##### 19/08/21
 
 ![variance and standard deviation](./images/variance_and_std_deviation.png)
 
@@ -440,9 +440,9 @@
    2. AWS comprehend - Text analysis, topic modelling, classification based on topic or sentiments
    3. Any pretrained model or unsupervised technique that might be useful
 
-## 06/09/2021
+# Modeling
 
-### Modeling
+##### 06/09/2021
 
 ### Deep Learning
 
@@ -466,6 +466,8 @@
     3. Recurrent NN (deals with sequences of time or anytype of data that has order in it. stock prices, sentence translation, LSTM, GRU)
 
 ### Activation Functions
+
+##### 07/09/2021
 
 1. Activation Functions trigger the neuron and define the output of it based on the input given to it.
 2. **Linear activation function** -
@@ -587,7 +589,6 @@
 14. **GRU** (Gated Recurrent Unit), optimized and simplified LSTM, better permorming, more used than LSTM
 15. Training RNN is harder than CNN, very sensitive to topologies and hyperparams, resource intensive, if built wrong, after long training also it will give wrong results.
 
-
 ### Deep Learning on EC2 / EMR
 
 1. EMR supports Apache MXNet and GPU instance types
@@ -616,3 +617,62 @@
 5. If NN is used, then we can use the technique called **Dropout**
 6. Dropout removes some of the neurons giving more randomness to learning
 7. Another solution can be **early stopping**, stop the nn at some epoch depending on validation accuracy (not on training accuracy)
+
+### Vanishing Gradient Problem
+
+1. When the gradient or slope of learning curve approaches 0, we the gradient is vanishing, meaning there is no learning happening meaning we are not reaching towards our milestone
+2. This slows down training also can cause numerical errors
+3. Its greater problem in RNN and deep nn as these vanishing gradients propagate to deeper layers
+4. Opposite problem - exploding gradient
+5. To solve vanishing gradient -
+   1. Multilevel hierarchy - breakup the levels into subnetworks and train each network individually
+   2. LSTM
+   3. ResNet (built to solve this problem)
+   4. Better activation function - ReLU is good
+6. Gradient checking - debugging gradient technique while developing NN
+
+### L1 and L2 Regularization
+
+1. Preventing overfitting
+2. L1 and L2 work on learning weights
+3. L1
+   1. is sum of weights
+   2. L1 performs feature selection, discards some features by weighting them 0
+   3. Computationally inefficient sometimes
+   4. Sparse output as the information is discarded
+   5. Used when we have curse of dimensionality
+4. L2
+   1. is sum of square of weights
+   2. In L2 all features are considered, they are just weighted smaller or bigger values
+   3. Computationally efficient
+   4. Dense output as no information is eliminated
+   5. Used when all features are important to train
+5. Same idea is applied to loss functions
+
+### Confusion Matrix
+
+1. Actuals in column and Predicted in rows (mostly, can be differently stated too)
+2. TP FP
+3. FN TN
+4. **Recall**
+   1. aka sensitivity, **true positive rate**, completeness
+   2. TP / (TP + FN)
+   3. Derives percent of positives correctly predicted
+   4. Good metrics to consider when FN is important, ex fraud/attack detection
+5. **Precision**
+   1. aka correct positives
+   2. TP / (TP + FP)
+   3. Derives percent of relevancy (relevant results)
+   4. Good metrics to consider when FP is important, ex drug usage
+6. **Specificity**
+   1. aka **true negative rate**
+   2. TN / (TN+FP)
+7. **F1 score**
+   1. aka
+   2. 2TP / (2TP + FP + FN)
+   3. 2 * ((Precision*Recall) / (Precision+Recall))
+   4. Good metric to consider when we care about both preciosn and recall
+8. **RMSE**
+   1. Root Mean Squared Error
+   2. only cares about right and wrong answers
+   3. used in Fake vs real image
