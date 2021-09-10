@@ -440,7 +440,7 @@
    2. AWS comprehend - Text analysis, topic modelling, classification based on topic or sentiments
    3. Any pretrained model or unsupervised technique that might be useful
 
-# Modeling
+# MODELING
 
 ##### 06/09/2021
 
@@ -676,3 +676,84 @@
    1. Root Mean Squared Error
    2. only cares about right and wrong answers
    3. used in Fake vs real image
+9. **ROC curve (Receiver Operating Characteristic curve)**
+   1. Its a plot of True positive rate (recall) vs False positive rate
+   2. There is diagonal line from point(0,0) to (1,1) in graph
+   3. If the curve falls above this line, then the model is good classified
+   4. More the curve bents toward upper left corner (0,1), better the model
+10. **AUC (Area Under Curve)**
+    1. Are under ROC curve
+    2. If AUC is below 0.5 or less (below the ROC diagonal), the model is useless
+    3. More the AUC towards 1.0 ie trying to create a perfect right angle, better the model
+
+### Ensemble Methods
+
+1. Instead of working on developing a single model, create different models with different input data size or hyperparams
+2. **Bagging**
+
+   1. Generate random subsets of original training set
+   2. Pass all these to different models of same ai model
+   3. Get metrics of all and choose 1 model to go forward
+   4. Each resampled model is trained parallely
+3. **Boosting**
+
+   1. In this, the data points are weighted
+   2. First run the model and data with equal weights
+   3. Then reweight the model and data
+   4. Run again with new weights
+   5. This is sequential process, as the result of 1 model is passed to another
+4. **Bagging vs Boosting which to choose**
+
+   1. XGBoost is hot today
+   2. Boosting yields better accuracy
+   3. Bagging avoids overfitting
+   4. Bagging works parallely hence less time
+
+### Amazon Sagemaker
+
+##### 08/09/2021
+
+1. Whole AI workflow, see [image](Udemy/AWS_Certified_Machine_Learning_Specialty_2021/images/sagemaker workflow.png)
+2. s3 data -> model train (train code in ECR) -> save artifacts in s3 -> model deployment (inference code in ECR) -> call endpoint
+3. Jupyter notebook -> supports pyspark, tenforlow, scikit, etc, hyperparam tuning, ec2 instance allocation, s3 access, model deployment endpoint, inbuilt models
+4. Data comes from s3 in any format, but **Protobuf and RecordIO** are the best for performance
+5. Converting data from raw to protobuf or recordio is also possible in notebook
+6. Training jobs
+7. Deploy trained models. ways to deploy -
+   1. on demand endpoint for single prediction,
+   2. sgmkr batch transform to get entire dataset predicted
+   3. sgmkr neo for edge devices
+   4. elastic inference for deepl learning models
+
+### Sagemaker Built-in Algorithms
+
+#### Linear Learner
+
+1. Copy of Linear Regression, where a straight line is fitted to our training data
+2. This line shows the predictions
+3. Can be useful for regression (numeric value prediction) as well as classification (binary as well as multiclass)
+4. For classification, it uses linear threshold function
+5. **Data format supported** -
+   1. RecorIO wrapped as protobuf (float32 only)
+   2. csv (first column assumed to be label data)
+   3. **File mode** (all files from s3 are combined into 1 and then given for training, takes longer time)
+   4. **Pipe mode** (files from s3 are given in stream as needed for training, optimized, less time)
+6. **Data processing** -
+   1. Requires data to be normalized (all features are weighted same)
+   2. Normalizing can be done upfront by us or automatically by Linear Learner (specify in constructor)
+   3. input shuffling needed
+7. **Training** -
+   1. multiple models are optimized parallely (like bagging)
+   2. uses stochastic gradient descent (sgd)
+   3. optimization algo - sgd, adam, etc
+   4. l1 or l2 regularization
+8. **Validation** -
+   1. chooses optimal one at the end
+9. **Important Hyperparams** -
+   1. balance_multiclass_weights - give equal importance to all classes in loss function
+   2. learning_rate, mini_batch_size
+   3. l1
+   4. l2 (weight_decay)
+10. **Instance type** -
+    1. single or multimachine cpu or gpu
+    2. multi gpu does not support
