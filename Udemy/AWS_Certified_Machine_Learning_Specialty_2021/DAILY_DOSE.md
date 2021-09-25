@@ -598,12 +598,14 @@
 ### Tuning Neural Networks
 
 1. **Learning rate**
+
    1. NN are trained using gradient descent, the difference between 2 points or steeps or descent is the learning rate
    2. Gradient descent is the slope or minimum path to reach a particular milestone.
    3. For many epochs (steps) the training happens where we try to reduce the cost function based on weights. In the beginning we start with random weight.
    4. **Too high LR means, we might lose optimal solution**
    5. **Too low LR means, we might have to use lots of epochs to reach optimal solution**
 2. **Batch size**
+
    1. number of training samples used within 1 epoch
    2. **small batch size does not get stuck in local minima (area between slope and rise)**
    3. **large batch size can converge into wrong solution**
@@ -757,3 +759,124 @@
 10. **Instance type** -
     1. single or multimachine cpu or gpu
     2. multi gpu does not support
+
+#### XGBoost
+
+1. Extreme Gradient Boosting is a boosted group of decision trees
+2. New trees are made to correct the errors of previous trees, thus minimizing the loss everytime. It used gradient descent to do so
+3. Currently the fastest algo in themarket, also winning many kaggle competetions
+4. Can be used for classification and regression (for predicting numerical values using regresion trees)
+5. Data format supported -
+   1. XGBoost is originally opensource and AWS just inhereted it,
+   2. hence, it supports csv or libsvm
+   3. AWS recently extended xgboost to support recordIO-protobuf and paraquet
+6. Training
+   1. models are serialized and deserialized using pickle library
+7. Important Hyperparams
+   1. subsample - prevents overfitting
+   2. eta - shrinks the stepsize, prevents overfitting
+   3. gamma - minimum loss reduction to create partition, larger value means more conservative
+   4. alpha - l1
+   5. lambda - l2
+   6. eval_metric - auc, rmse, error, etc. (auc when FP elimination is more imp)
+   7. scale_pos_weight - balance unbalanced data
+   8. max_depth - sets max number of depth (default is 6)
+8. instance types -
+   1. M5 is good choice, because XGBoost is memory bound not compute bound
+   2. If gpu is used then P# is good, (set param tree_method='gpu_hist')
+   3. If cpu is used, then muliple instances are required
+
+#### Seq2Seq
+
+1. Input is squence of tokens and output is sequence of tokens
+2. Used for Machine Translation (Language Translation)
+3. Text summarization
+4. Speech to Text conversion
+5. Implemented with RNN or CNN
+6. Data format supported -
+   1. RecordIO-Protobuf - tokens must be integer (in most algos, float is required). Also this format is best for this algo
+   2. You cannot pass just a text file with words in it. A separate tokenized file is required also a vocabulary file is essential
+   3. A sample code is provided by sagemaker which helps in converting norma text file with words into protobuf format
+   4. Requires - trainingg data, validation data and vocabulary file
+7. how to use -
+   1. There are already machine translation models available use them
+8. Imp hyperparams -
+   1. Batch_size
+   2. optimizer_type
+   3. learning_rate
+   4. num_layers_encoder
+   5. num_layers_deocoder
+   6. can optimize on-
+      1. accuracy - compares against validation data provided
+      2. BLEU score - compares against multiple translation or examples given
+      3. perplexity - cross entropy
+   7. Instance -
+      1. can only use gpu instances like p3
+      2. can be trained on only 1 machine (but multiple gpu can be used)
+
+#### Deep AR
+
+1. It's a supervised learning algorithm for forecasting 1D (scalar) time series data using RNN.
+2. Allows to train same model over several related time series at once
+3. Finds frequencies and seasonality
+4. Training input -
+   1. json line format (gzip or parquet)
+   2. every record needs to have timestamp and then the timeseries data/values
+   3. each record can contain
+      1. cat - categories
+      2. dynamic_feat - dynamic features like whether promotion applied while purchase
+5. how to use -
+   1. always include entire timeseries for training, testing and inference
+   2. use entire dataset as test set, remove last time points for training.
+   3. Don't use more than 400 data for prediction
+   4. Train on many timeseries data and not just one, whenever possible, because with time data changes and so should the model
+6. Important hyperparams -
+   1. context_length - number of data points a model can see before prediction, still the model will lag behind for 1 year. value can be smaller than seasonalities
+   2. epochs
+   3. mini_batch_size
+   4. learning_rate
+   5. num_cells - how many neurons to use
+7. Instance -
+   1. CPU or GPU for training
+   2. single or multi machine
+   3. start with cpu, only use gpu if necessary for larger models
+   4. inference - CPU only
+   5. May need larger instance for tuning
+
+#### BlazingText
+
+1. Text classification -
+   1. predicts labels for sentences
+   2. supervised
+   3. useful in web searches, information retrieval
+   4. used only for sentences, not entire document
+2. Word2vec
+   1. creates vector representation of words
+   2. semantically similar words have vectors close to each other
+   3. used in machine translation and sentiment analysis
+   4. it helps in NLP but not an NLP algo, it's a data processing lib
+   5. It only works on individual words, not on entire sentence or document
+3. Training input -
+   1. for supervised mode, data should have \__ label __ as the first word follwed by label and the sentence
+   2. for word2vec, data should be a text file with 1 sentence per line
+   3. also accepts **augmented text format** - {"source":"bhvh", "label":1}
+4. How to use -
+   1. Cbow (continuous bag of words) - bag of words, order does not matter
+   2. skip-gram - n grams, order of words matters
+   3. batch skip-gram - distributedcomputation over many CPUs
+5. Important hyperparams -
+   1. Word2Vec-
+      1. mode (cbow, skipgram, batch_skipgram)
+      2. learning_rate
+      3. window_size
+      4. vector_dim
+      5. negative_samples
+   2. Text classification
+      1. learning_rate
+      2. epochs
+      3. word_ngrams
+      4. vector_dim
+6. Instance -
+   1. for cbow and skipgram, p3 recommended, any single cpu/gpu will work
+   2. batch_skipgram uses single or multiple cpu
+   3. for text classification, c5 recommended if less than 2GB training data, else single gpu instance ml.p2.xlarge or ml.p3.2xlarge
