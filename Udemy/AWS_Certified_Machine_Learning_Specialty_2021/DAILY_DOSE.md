@@ -880,3 +880,122 @@
    1. for cbow and skipgram, p3 recommended, any single cpu/gpu will work
    2. batch_skipgram uses single or multiple cpu
    3. for text classification, c5 recommended if less than 2GB training data, else single gpu instance ml.p2.xlarge or ml.p3.2xlarge
+
+#### Object2Vec
+
+1. Embedding layer, works on entire documents
+2. Low dimensional representation of higher dimensional data
+3. It is basically word2vec, but generalized to handle things other than words
+4. It is unsupervised
+5. Applications -
+   1. recommendation system,
+   2. visualize clusters
+   3. compute nearest neighbours of objects
+   4. genre prediction
+6. inputs -
+   1. data must be tokenized into integers
+   2. training data consists of pairs of tokens and/or sequence of tokens
+      1. sentence pair
+      2. product pair
+      3. customer pair
+      4. label and sequence pair
+      5. user and item pair
+7. how to use -
+   1. process data into json lines and shuffle it
+   2. train with 2 input channels, 2 encoders and 1 comparator
+   3. encoder can be -
+      1. average pooled embedding
+      2. cnn
+      3. bidirectional lstm
+   4. comparator is follwed by a feed forward network
+8. important hyperparams
+   1. usual deep learnign stuff - epoch, dropout, learning rate, batch_size, activation_function, epoch, optimizer, etc
+   2. enc1_network, enc2_network - for this choose hcnn, bilstm, pooled_embedding
+9. instance -
+   1. can only train on single machine
+   2. cpu or gpu (multiple)
+   3. can use ml.p5, ml.m5
+   4. for inference use ml.p2.2xlarge - use INFERENCE_PREFERRED_MODE env variable for optimizing encoder embeddings rather than classification or regression
+
+#### Object Detection
+
+1. Identify all obejcts in image with bounding boxes
+2. detects and classifies object with single deep neural network
+3. classes are accompanied by confidence scores ie prediction score
+4. can train from scratch or use pretrained model like ImageNet
+5. Extending ImageNet model is also possible
+6. Input -
+   1. recordIO or image format (jpg/png/jpeg)
+   2. with image format, also provide a json file for annotation data for each image - meaning details about what objects are in the image and w\here exactly, it's size, name, etc
+7. how it is used -
+   1. uses a CNN with Single Shot multibox Detector algorithm
+      1. the base cnn can be VSG-16 or resnet-50 (cnn topologies that are already validated by the world)
+   2. takes an image as input and outputs all the objects detectd with bounding box and respective scores
+   3. transfer learning mode ie incremental training ie using pretrained model as base, and then extending the model or retraining over it
+   4. uses flip, rescale, jitter the training images to avoid overfitting
+8. important hyperparams -
+   1. mini_batch_size
+   2. learning_rate
+   3. optimizer (adam, sgd, adadelta, rmsprop)
+9. instance -
+   1. gpu for training - ml.p2 and ml.p3
+   2. cpur or gpu for inference - c5, m5, p2, p3 all ok
+
+#### Image Classification
+
+1. Its simpler form of Object Detection
+2. It just assigns (1 or more)label to an image
+3. It does not tell all objects in the image
+4. Input -
+   1. If training from scratch, use APache MXNet RecordIO
+      1. Not protobuf
+      2. This is for interoperability with other deep learning frameworks
+   2. Or raw jpg/png/jpef images
+   3. For image format, also feed .lst files to associate image index, class label, and path to image
+   4. Augmented Manifest Image Format in Pipe mode (pipe mode is allowing data to use from s3 instead of copying all data into current code/system)
+5. how to use -
+   1. under the hood it is actually a ResNet CNN
+   2. full training mode - initialize network with random weights
+   3. transfer learnign mode -
+      1. initialize network with pre-trained weights
+      2. top fully connected layer is initiated with random weights
+      3. network is fine tuned with new training data
+   4. default image size is 3-channel (RGB) 224 x 224 dimensions (ImageNet dataset)
+6. Important hyperparams -
+   1. usual params of deep learning ie batch_size, optimizer, learning_rate, etc
+   2. optimizer specific params - weight decay, beta1, beta2, gamma, eps
+7. instance -
+   1. training - gpu - mltigpu and multi machine is ok, p2 or p3
+   2. inference - cpu or gpu - c4, p2, p3
+
+#### Semantic Segmentation
+
+1. Pixel level object classification - tells which object in an image a particular pixel belongs to
+2. applications -
+   1. self driving vehicle
+   2. medical image diagnostic
+   3. robot sensing
+3. produces a segmentation mask -
+4. input -
+   1. For both training and validation - jpg images or png annotations
+   2. label maps to descibe annotations
+   3. for inference - jpg image accepted
+   4. augmented image format iwth pipe mode
+5. how to use -
+   1. under the hood it is built on Gluon and GluonCV, which is built over Apache MXNet
+   2. choice of 3 algos-
+      1. Fully-Convolutional Network (FCN)
+      2. Pyramid Scene Parsing (PSP)
+      3. DeepLabV3
+   3. choice of backbones -
+      1. ResNet50
+      2. ResNet101
+      3. Both of these are trained on ImageNet
+   4. Training from scratch and embedded training both supported
+6. important hyperparams -
+   1. deep learning usual like optimizer, learning_rate, epoch, batch_size
+   2. algorithm
+   3. backbone
+7. instance -
+   1. training - only gpu supported on single machine - p2, p3
+   2. inference - cpu (c5, m5) or gpu (p2, p3)
