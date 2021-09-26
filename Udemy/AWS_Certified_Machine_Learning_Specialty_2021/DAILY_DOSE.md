@@ -999,3 +999,87 @@
 7. instance -
    1. training - only gpu supported on single machine - p2, p3
    2. inference - cpu (c5, m5) or gpu (p2, p3)
+
+#### Random Cut Forest
+
+1. Anomaly Detection
+2. detrct unexpected spikes in timeseries data
+3. breaks in periodicity
+4. solves unclassifiable data points
+5. for every data point, anomalous score is calcualted
+6. based on algo develloped by Amazon
+7. input -
+   1. recordIO-protobuf or csv
+   2. can use file or pipe mode on either
+   3. optional test channel on calulating metrics like f1, accuracy, precision, recall on labelled data (anomaly or not)
+   4. as it is an unsupervised algo, we can use above test channel to check our predicitons against any validation or test data
+8. how to use -
+   1. creates a forest of trees, where each tree is partitioning the data (like decsion tree)
+   2. looks at any expected change in the complexity of tree after a new data point is added.
+   3. meaning - if a new data point is added, which causes the whole bunch of branches to form off, then the new data point might be anomalous
+   4. data is sampled randomly (hence 'Random' cut forest)
+   5. tehn trained
+   6. RCF also shows up in Kinesis Analytics
+9. Important hyperparams -
+   1. num_samples - more the number of trees, less the noise
+   2. num_samples_per_tree - should be chosen such that 1/num_smples_per_tree approximates to the ratio of anomalous data against normal data
+10. instance -
+    1. training - cpu only (NO gpu) - m5, c4, c5
+    2. inference - ml.c5.xl
+
+#### Neural Topic Model
+
+2 models provided by sagemaker - Neural Topic Model (NTM) and Latent Dirichlet Allocation (LDA)
+
+1. What the document or description is about?
+2. unsupervised
+3. the document does not necessarily be human readable format
+4. organize, summarize, classify documents as per topics
+5. It's not just TF/IDF (which is used to search a term)
+6. for ex, 'bike', 'car', 'mileage', 'train', 'speed' might categorize into 1 group or topic - "transportation", although it might not know to call it that (because we did not provide any label as it is unsupervised)
+7. under the hood Neural Variational Inference
+8. input -
+   1. recordIO-protobuf or csv
+   2. four channels -
+      1. "train" is required
+      2. "test", "validation", "auxillary" are optional
+   3. raw texts cannot passed directly as input, hence forst process the words into integers
+      1. every document must contain count of every word in the vocabulary in csv
+      2. "auxillary" channel is used for vocabulary
+   4. file or pipe mode both supported
+9. how to use it -
+   1. Define prior how many topics we want
+   2. these topics are latent representation on top ranking words
+10. important hyperparams -
+    1. mini_batch_size and learning_rate - lowering these can reduce validation loss, but training time increases
+    2. num_topics
+11. instance -
+    1. training - cpu or gpu, gpu recommended, but cpu cheaper
+    2. inference - cpu
+
+#### Latent Derichlet Allocation
+
+1. Another topic modelling algo, which is not based on neural network
+2. unsupervised
+3. can be used for problems other than words -
+   1. customer grouping based on purchase
+   2. harmonic analysis in music
+4. input -
+   1. recordIO-protobuf or csv
+   2. train channel, test channel is optional
+   3. token are passed as integers (words converted to integers)
+   4. each document must have counts of words in vocabulary in csv
+   5. pipe mode is only supported with recordIO
+5. how to use -
+   1. unsupervised, number of topics provide beforehand
+   2. optional test channel can be used to score - metrics used is per-log-likelihood
+   3. functionally similar to NTM, but far more efficient and cheaper as it uses CPU
+6. important hyperparams -
+   1. num_topics
+   2. alpha0
+      1. its an inital guess for concentration parameter
+      2. smaller values give sparse topic mixture
+      3. larger values (>1.0) produce uniform mixture of topics
+7. intance -
+   1. training - single instance cpu
+   2. inference - cpu
