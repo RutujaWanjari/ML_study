@@ -1198,3 +1198,90 @@
    1. training - cpu or gpu
       1. cpu is recommended
       2. gpu is for dense data, hence check again why using FM, because FM works only with sparse data
+
+#### IP Insights
+
+1. It's about finding fishy behaviour in our weblogs, or waflogs
+2. unsupervised learning of IP address usage patterns
+3. identifies supicious behaviour from IP addresses -
+   1. identify login attempts from anomalous IP
+   2. identify accounts creating resources from anomalous IP
+4. its actually a security tool
+5. input -
+   1. usernames and accountids can be fed in directly, not much data processing
+   2. training channel required, optional validation channel (AUC score is computed)
+   3. CSV only consisting of 2 things - entity(identifier like account_id) and IP
+6. how to use -
+   1. uses neural network to learn latent vector representations of entity and IP addresses
+   2. Entities are hashed and embedded -
+      1. need sufficiently large hash size
+   3. automatically generates negative samples from data while pairing entity and IP addresses
+   4. Above point is very important in examples like fraud detection, suspicious web request detection
+7. important hyperparams -
+   1. neural params like epochs, batch_size, learning_rate, optimizer
+   2. num_entity_vectors -
+      1. ie hash size,
+      2. set it to twice the number of unique entity identifier
+   3. vector_dim -
+      1. size of embedding vectors
+      2. scales model size
+      3. too large value results in overfitting
+8. instance -
+   1. training - cpu or gpu,
+      1. sincle it's a neural network, gpu is recommended
+      2. can use multiple gpus
+      3. ml.p3.2xlarge or higher
+      4. size of cpu instance depends on vector_dim and num_entity_vectors
+
+#### Reinforcement Learning
+
+1. RF is not like other algorithms, wherein, we train the model, deploy it, then use it for classification of some items or maybe regression and get some scores from the deployed model
+2. It's about learning about a virtual environment or space and to navigate that environment in an optimal manner as we encounter some different states or conditions or situations
+3. Accordingly the agent learning these things behaves.
+4. With Reinforcement Learning AI can win a lot of games
+5. Ex -
+   1. pacman (AI game)
+   2. cat and mouse game (AI game)
+   3. dialog system - like chatbot
+   4. industrial robots
+   5. supply chain management
+   6. autonomous car
+6. once the space has been explored, it yield fast performance
+7. Q-Learning
+   1. It's a specific implementation of RL
+      1. s = previous state
+      2. s` = current state
+      3. a = action to take
+      4. Q = reward (a value for state and action pair)
+   2. star with Q=0
+   3. when bad happens with a particular state/action pair, reduce it's Q
+   4. when good happens with a particular state/action pair, increase Q
+   5. Although we exploration problem here -
+      1. if we choose a path with huighest Q, we might lose lot's of correcgt path, image pacman
+      2. another apporach is use a term called epsilon, wherein choose a random number, if num  less than epsilon, don't follow Q, but choose random action.
+      3. This way, exploration for new parth never stops
+      4. also choosing epsilon can be tricky
+   6. Q-learning is also called as MarKov Decision Process , also called as Discrete Time Stochastic Control Process
+8. Framework - Tensorflow and MXNet
+9. Toolkits - Intel Coach and Ray Rllib
+10. Environments -
+    1. MATLAB, Simulink
+    2. EnergyPlus, RoboSchool, PyBullet
+    3. Amazon Sumerian, AWS RoboMaker
+11. Distributed Training -
+    1. can distribute training and/or environment rollout
+    2. multicore and multiinstance
+12. Key Terms -
+    1. Environment - Layout of the borad or maze
+    2. State - where the player/pieces are
+    3. Action - what action to perform
+    4. Reward - value associated with the action from that state
+    5. observation - surroundings in a maze or chess board
+13. input -
+    1. input is not fixed, it can be anything
+14. hyperparams -
+    1. not fixed or builtin,
+    2. you can create your own hyperparams and then tune them using AutoML
+15. instance -
+    1. Nothing specified by AWS
+    2. but as we know it uses deepl learning, hence GPu will be best
