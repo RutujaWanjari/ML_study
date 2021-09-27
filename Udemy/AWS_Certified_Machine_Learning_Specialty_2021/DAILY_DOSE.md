@@ -1083,3 +1083,118 @@
 7. intance -
    1. training - single instance cpu
    2. inference - cpu
+
+#### K-Nearest-Neighbors (KNN)
+
+1. plot a datapoint in the space, check waht labels n(usualyy 5) the points near this new datapoint have, th most occurring label wins
+2. supervised
+3. used for classification as well as regression
+4. calssification - find k closet points to the new datapoint and return the most frequent label
+5. regression - find k closest point to the new datapoint and return the most average value
+6. input -
+   1. recorIO-protobuf or csv -
+      1. first column is label
+   2. file or pipe mode in either case
+   3. train channel has data and test channel emits accuracy or MSE ()
+7. how to use -
+   1. Data is sampled first
+   2. sagemaker has dimensionality reduction stage -
+      1. avoid sprse data (curse of dimensionality)
+      2. it comes at the cost of noise/accuracy
+      3. "sign" or "fjlt" method is used
+   3. build an index for looking up neighbors
+   4. serialize the model
+   5. query the model for given K
+8. important hyperparams -
+   1. k = number of neighbors
+   2. sample_size
+9. instance -
+   1. training - cpu or gpu - m5, p2
+   2. inference cpu or gpu - cpu lower latency, gpu higher throughput on large dataset
+
+#### K-Means Clustering
+
+1. unsupervised clustering
+2. Data is divided into K groups, where members of group are as similar to each other as possible -
+   1. meaning of "similar" is defined by us
+   2. nearest distance is measured by Euclidean distance
+3. Doing this can be challenging for large dataset, hence sagemaker brings to the table WebScale K-Means Clustering algo
+4. input -
+   1. recordIO-protobuf or csv
+   2. file or pipe mode on either
+   3. train channel and test optional channel -
+      1. for training use ShardedByS3Key and for test use FullReplicated
+5. how to use -
+   1. every observation iS mapped to n-dimensional space (n=nnumber of features)
+   2. works to optimize the center of cluster -
+      1. "extra cluster center" msy be specified to improve accuracy(these extra clusters ie 'K' get end up reduced to actual cluster number we provided ie 'k')
+      2. K = k*x
+   3. algorithm -
+      1. process of determining extra cluster center -
+         1. random - pick initial cluter center randomly, gives problems when clusters become too close too each other
+         2. k-means++ - tries to make initial clusters far apart
+      2. iterate over training data and calculate cluster center
+      3. Reduce clusters from K to k -
+         1. using Lloyd's method in k-means++
+6. important hyperprams -
+   1. k -
+      1. choosing k is tricky
+      2. hence use elbow method - plot within-cluster sum of squares as the funciton of k, and try to find point where larger values of k are not producing any benefit and go with that
+      3. basically optimize for tightness of clusters that's what 'within-cluster sum of squares' is measuring
+   2. mini_batch_size
+   3. extra_center_factor ie x parameter
+   4. init_method - random or k_means_plus_plus
+7. instance -
+   1. training - cpur or gpu - cpu recommended, if using gpu use only single instance (p*.xlarge)
+   2. inference - cpu
+
+#### Principal Component Analysis
+
+1. PCA is used to convert higher dimensional (remember 1 dimesion is 1 feature) data into lower dimensional data, meaning, the data that has lots of features can be converted to some simpler 2D space with minimizing the loss of information
+2. This process is called **dimensionality reduction**
+3. The reduced dimensions are called components -
+   1. First component has largest possible variability in data
+   2. Second component has the next largest possible variability in data and so on...
+4. Unsupervised
+5. input -
+   1. recordIO-protobuf of csv
+   2. file or pipe mode on either
+6. how to use -
+   1. First a covariance matrix is created
+   2. Then using Singular Value Decomposition (SGD), it is further distilled down
+   3. Two modes of operation in sagemaker -
+      1. Regular
+         1. for sparse data and smaller number of features and observation
+      2. Randomized
+         1. for larger number of features and observations
+         2. uses approximation algorithm and scales a little bit better
+7. important hyperparams -
+   1. algorithm_mode
+   2. subtract_mean - to unbias the data
+8. instance -
+   1. training - cpu or gpu (depends on specifics of input)
+   2. inference - cpu
+
+#### Facotorization Machines
+
+1. Deals with sparse data
+2. sparse data = there are huge number of pages on a site, a user might just click or interact with some pages. Most of them will not be used by him. Hence depending on which pages he used, we have to predict which pages he might next be interested in. This is called sparse data (from a vast bunch of data, useful information is very less)
+3. Applications -
+   1. Click Prediction
+   2. Recommendation system
+4. Supervised - Classification and Regression
+5. It's limited to pair wise interations like user <-> item
+6. input -
+   1. recordIO-protobuf format in float32
+   2. as the data is sparse, csv is not compatible with factorization machines, because we will just end up having numerous amount of columns(features), which won't be related or useful enough.
+7. how to use -
+   1. Find factors we can use to predict a classification (click or not?, purchase or not?) or regression(value finding) (predict rating), wherein a matrix is given representing some pair of things (user and items)
+   2. Whenever we want to build recommendation system thinks of Factorization Machines.
+8. important hyperparams -
+   1. initialization methods for bias, linear terms, factors
+      1. uniform, normal or constant
+      2. properties of each method can be separately tuned
+9. instance -
+   1. training - cpu or gpu
+      1. cpu is recommended
+      2. gpu is for dense data, hence check again why using FM, because FM works only with sparse data
