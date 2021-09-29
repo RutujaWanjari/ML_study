@@ -1285,3 +1285,50 @@
 15. instance -
     1. Nothing specified by AWS
     2. but as we know it uses deepl learning, hence GPu will be best
+
+#### Automatic Model Tuning
+
+1. Hyperparameter Tuning -
+   1. learning_rate, batch_size, epochs, etc we can never be 100% sure what values are perfect
+   2. There's always trial and error technique to follow which leads us to high computation charges and resource exhaustion.
+   3. Hence use Automatic Model Tuning (AMT)
+   4. In AMT, provide the hyperparams and the ranges you want to try, and the metrics we are aiming optimizing for
+   5. AMT will try all the combinations and will give the best set of parameters that you can go forward with.
+   6. Also, AMT is smart, it learns while on the go, hence it does not actually tries all the params, it understands which path to take and which not.
+   7. Best practices -
+      1. Don't give too many hyperparams at a time
+      2. Don't start too many training jobs concurrently - parallel/concurrent training jobs does not learn well as it goes. Instead 2-3 jobs at time will learn quickly and can be used in next set of jobs
+      3. Try to keep the ranges as minimal as you can
+      4. use logarithmic scales (instead of providing range linearly, provide it in logarithmic fashion)
+      5. make sure training jobs running on multiple instances report the correct objective metric at the end
+
+#### Apache Spark
+
+1. Apache Spark is a very popular framework for processing data
+2. It does what sagemaker does, But it does lot more than that as it is good in data processing
+3. It has very popular MLlib library that does machine learning at large scale
+4. So if use sagemaker + spark, you will get power of both. To do so -
+   1. preprocess data with spark (collect datam map it, reduce it, etc) returns a dataframe
+   2. invoke sagemaker + spark librabry - sagemaker_pyspark
+   3. Now insted of MLlib, use SageMakerEstimator, which works in same way
+      1. Some of the algos here are PCA, XGBoost, KMeans
+   4. SageMakerModel to make inferences
+5. TO integrate spark and sagemaker -
+   1. Connect sagemkaer notebook with a remote EMR cluster running spark (or use Zeppelin)
+   2. Training dataframe which we get from spark should have -
+      1. features column which is a vector of Doubles (double precision values)
+      2. an optional labels column of Doubles
+   3. Use SageMakerEstimator, call fit() on it, returns SageMakerModel
+   4. Call transform on theSageMakerModel, to make inference
+   5. Works with Spark Pipelines too
+6. **Why to use this ?** - For preprocessing bigdata in Spark and training and inference in Sagemaker (also automatic hyperparameter tuning)
+
+#### SageMaker Studio and Experiments
+
+1. SageMaker Studio is Web-based IDE
+   1. Write and execute code in Jupyter notebooks
+   2. Build and train machine learning models
+   3. Deploy the models and monitor the performance of their predictions
+   4. Track and debug the machine learning experiments
+2. SageMaker Experiments -
+   1. organize, capture, comapre, search all yuor ML jobs
