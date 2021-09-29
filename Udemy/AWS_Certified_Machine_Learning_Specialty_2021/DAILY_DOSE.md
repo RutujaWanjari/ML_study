@@ -1332,3 +1332,104 @@
    4. Track and debug the machine learning experiments
 2. SageMaker Experiments -
    1. organize, capture, comapre, search all yuor ML jobs
+
+#### SageMaker Debugger
+
+1. provides sagemaker studio debugger dashboard
+2. auto-generated training reports
+3. saves internal model state at periodic intervals
+   1. gradient/tenors are stored overtime
+   2. define rules for detecting unwanted conditions while training
+   3. for every rule a debug job is created which logs and fires a cloudwatch event whenever a rule is hit
+4. Built-in rules -
+   1. monitor system bottlenecks
+   2. debug model parameters
+   3. profiling model framework operations like tensorflow, etc
+5. Supported frameworks and algorithms -
+   1. tensorflow
+   2. MXNet
+   3. XGBoost
+   4. Pytorch
+   5. sagemaker generic estimator
+6. Debugger API is available in github
+   1. construct hooks and rules for CreateTrainingJob and DescribeTrainingJob API's
+   2. **SMDebug** is the client library (integrating sagemaker and debugger) allows to register hooks for ananlysis, accessing, processing training data
+7. SageMaker debugger INSIGHTS dashboard
+8. Debugger ProfilerRule -
+   1. ProfilerResport
+   2. Hardware metrics (CPUBotttleneck, GPUMemoryincrease)
+   3. Framework metrics (MaxInitializationTime, OverallFrameworkMetrics, StepOutliers)
+9. Buil-in actions in response to rules -
+   1. email
+   2. sms
+   3. stop-training
+   4. All the above happens through SNS
+10. Profiling system resource usage and training
+
+#### SageMaker Autopilot/AutoML
+
+1. SgeMaker Autopilot is wrapped around AutoML which is automatically identifying which model and algorithm is right for our problem statement
+2. Automates -
+   1. algorithm selection
+   2. model tuning
+   3. data preprocessing
+   4. all infrastructure
+3. It does all the trial and error for you
+4. Workflow -
+   1. load data from s3
+   2. select target column for prediction
+   3. automatic model creation
+   4. model notebook is avaliable for visibility and control
+   5. a model leaderboard is provided which ranks a list of recommended models, from which we can pick anyone to go forward with
+   6. Deploy and moitor the model
+   7. refine the model from the notebook later if needed
+5. can add in human guidance or human intervention, but not a must thing
+6. can be done whole thing with or without code in SageMaker Studio or aws sdk
+7. currently it can limited problems -
+   1. Binary classification
+   2. multiclass claassification
+   3. regression
+8. Algorithm supported -
+   1. Deep Learning (MLP-MultiLayerPerceptrons)
+   2. LinearLearner
+   3. XGBoost
+9. Data fromat -
+   1. csv - tabular data
+10. Autopilot Expalinability -
+    1. AWS realizes that there can be biases inside automl, which can be detected and removed with involvement of human and other resources. (For example, real estate problem solved by AutoML might use 'race' features extensively and provides prediciton as per it, this is totally WRONG)
+    2. Autopilot need not be a blackbox, we must know what happens inside, so that there are no biases or false approach inside.
+    3. Autopilot instegrates with SageMaker Clarify (Clarify tells how different features contributed to each prediction)
+    4. This integration also gives transparency on fearures and biases inside the autml
+    5. Also does Feature Attribution -
+       1. Uses SHAP baselines / Shapley values
+       2. For this the research was done using cooperative game threory
+       3. It basically assigns each feature an importance value for a given prediction
+
+#### SageMaker Model Monitor
+
+1. Monitors deployed models
+2. Alerts on cloudwatch
+3. Detect anomalies and outliers
+4. Detect new features
+5. Visulize data drift (missing data causes model changes)
+6. No code needed
+7. SageMaker studio and a webbased dashboard used to set this up
+8. integrates with clasrify to detect biases
+9. can predict future bias beforehand
+10. understand model beahviour - which features contributed to the prediction
+11. Data is stored in s3
+12. Monitoring schedules are created to run these monitor jobs periodically
+13. Metrics are shown in cloudwatch - based on this, you can take corrective measures like retrain the model or audit data. Also, you ca trigger alarms using cloudwatch notifications
+14. Integrates with Tableau, Quicksight, Tensorboard or can be visualized in SageMaker Studio
+15. Monitoring Types -
+    1. Drift in Data quality
+       1. 'quality' means the statistical properties like mean, max, std deviation, etc
+       2. it is checked respective to baseline that we explicitly create when we create model monitor job
+    2. Drift in model quality
+       1. checkd vs model baseline that we create while creating job
+       2. quality - rmse, accuracy, poc, etc
+       3. quality - ground truth label (GTL means what the humans have labelled for the data vs what model has predicted)
+    3. Bias drift - using Clarify
+    4. Feature attribution drift -
+       1. Based on Normalized Discounted Cumulative GAin (NDCG) score
+       2. compares feature ranking (whihc feature is more important) between live vs training data
