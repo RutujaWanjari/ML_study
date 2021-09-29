@@ -1433,3 +1433,59 @@
     4. Feature attribution drift -
        1. Based on Normalized Discounted Cumulative GAin (NDCG) score
        2. compares feature ranking (whihc feature is more important) between live vs training data
+
+#### SageMaker Latest Features
+
+1. SageMaker Jumpstart -
+   1. on-click models and algorithms from model zoos
+   2. 150 open-source models in NLP, image classification, object detection, etc
+2. SageMaker Data Wrangler -
+   1. Data processing like import, export, transform, analyze data in SageMAker Studio
+3. SageMaker Feature Store -
+   1. Find, analyze and share features in studio
+   2. operates in 2 modes - online (low latency), offline (for training or batch inference)
+   3. features are organised into groups
+4. SageMaker Edge Manager -
+   1. It's a software agent for edge devices
+   2. uses model already optimized with sagemaker NEO
+   3. collects and manages data for sampling, labelling and retraining
+
+
+### Higher Level AI/ML services
+
+#### Amazon Comprehend
+
+1. Used for natural language processing and textual analytics
+2. Input can social media chats, emails, webpages, documents, transcripts, medical records (comprehend medical)
+3. It can extract -
+   1. sentiments
+   2. languages
+   3. phrases
+   4. entities
+   5. syntax
+   6. topics
+   7. document classification
+4. You can use your own data or already available data
+
+#### Amazon Translate
+
+1. Uses deep learning for translation of text
+2. Not just dictionary words but also supports custom terminology -
+   1. in csv, tsv or tmx format
+   2. example brand names etc..
+
+#### Amazon Transcribe
+
+1. converts speech to text
+2. input -
+   1. flac, mp3, mp4, wav foramt in a specified language
+   2. streaming audio supported -
+      1. http/2 or websocket
+      2. english, spanish, french only
+3. speaker identification - specify number speakers
+4. channel identification -
+   1. if we have 2 callers, we trnascribe them separately
+   2. merging is based on timing of "utterances"
+5. custom vocabularies -
+   1. vocabulary list (for special words like names, acronyms, brand names)
+   2. vocabulary table (pronunciation of words can also be provided to amazon transcribe ("SoundLike", "IPAs", "DisplayAs"))
