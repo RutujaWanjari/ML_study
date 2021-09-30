@@ -1450,7 +1450,6 @@
    2. uses model already optimized with sagemaker NEO
    3. collects and manages data for sampling, labelling and retraining
 
-
 ### Higher Level AI/ML services
 
 #### Amazon Comprehend
@@ -1476,7 +1475,7 @@
 
 #### Amazon Transcribe
 
-1. converts speech to text
+1. **converts speech to text**
 2. input -
    1. flac, mp3, mp4, wav foramt in a specified language
    2. streaming audio supported -
@@ -1489,3 +1488,52 @@
 5. custom vocabularies -
    1. vocabulary list (for special words like names, acronyms, brand names)
    2. vocabulary table (pronunciation of words can also be provided to amazon transcribe ("SoundLike", "IPAs", "DisplayAs"))
+
+#### Amazon Poly
+
+1. **converts text to speech**
+2. many voices and languages
+3. supports **lexicons** -
+   1. customizing pronunciation of specific words and phrases
+   2. ex - when "w3c" is written in text, speech dhould be "world wide web consortium"
+4. supports **SSML** (Speech Synthesis Markup Language) format -
+   1. an alternative to plain text
+   2. gives control over breathing, emphasis, pronnunciation, whispering, speech rate, pauses, pitch
+5. supports **speech marks** -
+   1. can encode when sentence/word starts or ends in the audio stream
+   2. useful in lip syncying
+
+#### Amazon Rekognition
+
+1. computer vision
+2. applications -
+   1. facial analysis
+   2. celebrity recognition
+   3. object and scene detection
+   4. text in image detection
+   5. face comparison
+   6. video analysis
+   7. image moderation
+   8. **PPE kit detection**
+   9. label detection
+3. image source -
+   1. s3 (faster if image already present here)
+   2. image bytes as part of http request
+4. video source -
+   1. kinesis video stream -
+      1. H.264 encoded
+      2. 5 to 30 frame per second
+      3. go with pics having better resolution over framerate
+5. recognition depends on lighting, angle, visibility of eyes, resolution
+6. can use lambda to trigger image analysis upon upload
+7. in the output, it gives bounding boxes
+
+#### Amazon Forecast
+
+1. fully managed service for forecasting timeseries data
+2. It uses AutoML to choose best model for your data - ARIMA, DeepAR, ETS, Prophet, NPTS
+3. works with any type of timerseries data -
+   1. price, promotions, waflogs, etc
+   2. can combine with associated data to find relationships
+4. using amazon fforecast helps - inventory planning, resource planning, financial planning
+5. based on dataset groups, predictors, and forecasts
