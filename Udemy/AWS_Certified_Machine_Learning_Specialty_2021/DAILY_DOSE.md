@@ -1537,3 +1537,90 @@
    2. can combine with associated data to find relationships
 4. using amazon fforecast helps - inventory planning, resource planning, financial planning
 5. based on dataset groups, predictors, and forecasts
+
+#### Amazon Lex
+
+1. builds conversational interface
+2. powered by same technology which is behind amazon Alexa
+3. builds natural language chatbot engine
+4. a bot is built around intents -
+   1. utterances invoke intent (ex - i want to order  pizza, so intent might be pizza order)
+   2. to fulfill this intent a lambda function is invoked
+   3. to fulfill intent extra information is needed in terms of slot -
+      1. this is the way to have conversation
+      2. slot can be pizza size, toppings, crust type, when to deliver
+5. can deploy to aws mobile sdk, facebook messenger, slack, twilio
+6. **Question** - how to build alexa ?
+   1. use transcribe (user speech to text conversation)
+   2. use lex (to get intent)
+   3. use poly (to convert response text to speech)
+
+### Other ML services
+
+#### Amazon Personalize
+
+Recommendation system as a web service
+
+#### Amazon Textract
+
+Optical Character Recognition (OCR) with tables, forms and fields support
+
+#### AWS DeepRacer
+
+1/18 scale race car using Reinforcement Learning (for racing competitions)
+
+#### DeepLens
+
+Deep learning enabled video camera, integrated with Rekognition, SageMaker, Tensorflow, Polly, Tensorflow, MXNet, Caffe
+
+#### AWS DeepComposer
+
+AI powered keyboard - composes whole song from just a melody, only for educational purpose
+
+#### Amazon Fraud Detector
+
+1. upload your own historical data
+2. builds custom models from a template you choose
+3. It has an api, we can hit and check probability of fraud
+4. applications - access risk from -
+   1. new account opening system
+   2. guest checkout system
+   3. try before you buy abuse
+   4. online payment abuse
+
+#### Amazon CodeGuru
+
+1. automated code reviewing
+2. finds line of code that hurts performance, resource leaks, race conditions
+3. powered by ML
+4. currently only supports python and java
+5. integration with github, bitbucket, aws codecommit, github enterprise
+
+#### Contact Lens for Amazon Connect
+
+1. For customer support people
+2. ingest audio data from recorded calls, maybe using transcribe
+3. allows to search calls/chats
+4. sentiment analysis
+5. find "words" that corelate with successful calls
+6. measure talk speed and interruptions
+7. categorize calls automatically as per issues or topics
+8. theme detection - discover new issues which are emerging using customer calls and not yet in our system
+
+#### Amazon Kendra
+
+1. Enterprise serach environment, basically build for large organizations and their customers
+2. It's kind of google search engine but for intra-company
+3. powered by strong nlp
+4. uses thumbs up/ thumbs down feedback mechanism to get more accurate
+5. combines data from file systems, SharePoint, instranet, sharing services (JDBC, s3) into one searchable repository
+6. you can do relevance tuning (filtering) to show what is more important to you like view count, last update date, etc
+7. Remember like Alexa's sister
+
+#### Amazon Augmented AI (A2I)
+
+1. human review of ML predictions
+2. similar to ground truth
+3. just like ground truth, to do this job, you can access the amazon's turk workforce or hire vendors or get your own inetrnal staff
+4. builds workflows for reviewing low -confidence predictions
+5. integrates with sagemaker, textract, rekognition
