@@ -1624,3 +1624,77 @@ AI powered keyboard - composes whole song from just a melody, only for education
 3. just like ground truth, to do this job, you can access the amazon's turk workforce or hire vendors or get your own inetrnal staff
 4. builds workflows for reviewing low -confidence predictions
 5. integrates with sagemaker, textract, rekognition
+
+#### Labs
+
+1. Create a DNN on Mnist Numbers dataset
+2. Question - How to choose batch_size?
+3. Question - What happens when validation accuracy is less than training accuracy in each step or epoch?
+4. open ec2 instance in local terminal ssh -L 8888:localhost:8888 -i "ec2_key_pair_udemy.pem" ubuntu@ec2-3-135-228-122.us-east-2.compute.amazonaws.com
+
+# ML IMPLEMENTATION AND OPERATION
+
+##### 04/10/2021
+
+### SageMaker's Inner Details and Production Variant
+
+#### SageMaker and Docker
+
+1. All models in sagemaker are hosted in docker containers
+2. All training and inference in sagemaker happens via ECR
+3. This llows us to use any algorithm irrespective of language and runtime
+4. Containers are isolated and contain all resources and dependencies needed to run code
+5. Except all, tensorflow is the only framwork that does not automatically get distributed over amchines, it is done via horovod or parameter servers
+6. We can have separate training and inference docker images
+7. typical docker image code (WORKDIR) has -
+   1. nginx.conf  -- a configuration file for nginx frontend (webserver used for frontend)
+   2. wsgi.py  -- a wrapper to invoke flask application for serving results
+   3. train/  -- contains train code, data, utility libraries, etc. Check srtucture of this directory ([here](https://github.com/RutujaWanjari/ML_study/tree/main/Udemy/AWS_Certified_Machine_Learning_Specialty_2021/images/training_container.png))
+   4. serve/  -- launch gunicorn server which runs multiple instance of prediciton webserver ie predictor.py ([here](https://github.com/RutujaWanjari/ML_study/tree/main/Udemy/AWS_Certified_Machine_Learning_Specialty_2021/images/deployment_container.png))
+   5. predictor.py -- code for implementing flask webserver with routes for init (importing models) and predict (predicting data)
+8. A typical dockerfile contains -
+   1. FROM tensorflow/tensorflow:2.0.0a0
+      1. Downloads tensorflow lib
+   2. RUN pip install sagemaker-constianers
+      1. installs dependencies
+   3. COPY train.py /opt/ml/code/train.py
+      1. copies our training code to sagemaker training file
+   4. ENV SAGEMAKER_PROGRAM train.py
+      1. defines environ vars like entrypoint
+   5. There are many more env vars that can be set check - [here](https://github.com/aws/sagemaker-containers#important-environment-variables) and [here](https://github.com/aws/sagemaker-containers#list-of-provided-environment-variables-by-sagemaker-containers)
+
+#### Production Variant
+
+1. Not all Al models (recommendation system) can be effectively tested offline
+2. Some systems like recommendation model need to be tested online on live audience ie A/B testing
+3. Also we might develop multiple models for same problem statement and would want to test them in production parallely to get better insights of which is better
+4. For such cases, we use productionvariant
+5. It has Variant Weights, which tells sagemaker how to distribute traffic to different models which need to be tested
+6. For ex- it tells to send 90% variant ie traffic to existing working model, and send 10% variant to experimental model
+
+### SageMaker for Edge deivices
+
+Means deploying models to edge devices like smart camera for face detection, computer chip (ARM, Nvidia, intel processors) for automated car, alexa, etc
+
+**Question - How to do ML in edge devices?**
+
+**Train model using ec2 and docker in Sagemaker, Compile it using Neo (to make the model deployable to edge devices), Deploy it using Greengrass**
+
+#### SageMaker Neo
+
+1. enables developers to optimize ml models for inference in the cloud and edge devices
+2. Train once run anywhere or any device
+3. optimizes code (tensorflow, MXNet, Pytorch, ONNX, XGBoost) for specific devices
+4. consists of a compiler and a runtime library
+
+#### Neo + AWS Iot Greengrass
+
+1. Neo-compiled models can be deployed to an Https endpoint
+
+   1. must be same instance type used for compilation
+   2. can be hosted on c5, p3, m5, m4, p2
+2. OR you can deploy it to IOT devices
+
+   1. this is how we get the model to actual device
+   2. does inference at the edge device with local data, using model trained on cloud
+   3. uses lambda for inference applications
