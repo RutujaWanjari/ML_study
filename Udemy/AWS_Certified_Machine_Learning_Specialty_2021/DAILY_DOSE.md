@@ -1690,11 +1690,102 @@ Means deploying models to edge devices like smart camera for face detection, com
 #### Neo + AWS Iot Greengrass
 
 1. Neo-compiled models can be deployed to an Https endpoint
-
    1. must be same instance type used for compilation
    2. can be hosted on c5, p3, m5, m4, p2
 2. OR you can deploy it to IOT devices
-
    1. this is how we get the model to actual device
-   2. does inference at the edge device with local data, using model trained on cloud
-   3. uses lambda for inference applications
+   2. does inference at the edge device with local data
+   3. using model trained on cloud, uses lambda for inference applications
+
+### SageMaker Security
+
+#### General AWS Security
+
+1. IAM (Identity and Access Management) - define roles and policies as per the user reuirement
+2. MFA (Multi Factor Authentication) - 2 step authentication
+3. SSL/TLS (Secure Sockets Layer / Transport Layer Security) - use this wherever possible while connecting to any aws service
+4. CloudTrail - log any activity in your aws account
+5. **Question - CloudTrail vs CloudWatch**
+   **CloudTrail is for audditing, a trail of all activities, a log of what everyone did.
+   CloudWatch is for monitoring log data, raising alarms if anything wrong, scheduling events**
+6. Encryption - wherever possible
+7. PII (Personal Identifiable Information)
+8. Make sure whenever we send important information, we encrypt it in REST as well as in TRANSIT
+
+#### Protecting Data at Rest in SageMaker
+
+1. Protect data that is at rest in AWS using -
+2. Aws KMS (Key Management Service) -
+   1. accepted by notebooks and all sagemaker jobs -
+      1. training, tuning, batchtransform, endpoint, etc,
+      2. notebooks and all things under /opt/ml/ and /tmp can be encryted with KMS
+3. S3 (Simple Storage Service) -
+   1. encryted buckets for storing data and models
+   2. s3 can also use kms
+
+#### Protecting Data at Transit in SageMaker
+
+1. all traffic supports TLS/SSL
+2. IAM roles
+3. encrypt node and communication channel, if training is happening accross multiple nodes
+   1. but it increases time and cost with DL models
+   2. this is also called inter container traffic information
+   3. can be enabled/disabled via console or api when setting up training or tunning job
+
+#### SageMaker + VPC (Virtual Privage Cloud)
+
+1. Training jobs can be run on private cloud to ensure more security - VPc
+2. But this has some problems because sagemaker requires to communicate with s3
+   1. to resolve this, setup s3 vpc endpoints
+   2. custom endpoint policies and s3 bucket policies
+3. Notebooks are by default internet enabled
+   1. This can be problematic if someone tries to attack
+   2. If you disable internet for a notebook then for training and inference to work, make sure -
+      1. setup an interface endpoint (PrivateLink) or NAT Gateway
+      2. allow outbound connections
+4. Training and inference containers are also by default internet enabled -
+   1. you can do network isolation, but it prevent s3 access, so you have to do some workaround, because sagemaker needs s3 access at all time
+
+#### SageMaker + IAM (Identity Access Management)
+
+1. visit [here](https://docs.aws.amazon.com/sagemaker/latest/dg/api-permissions-reference.html) to check sagemaker iam permissions
+2. sagemaker iam policies -
+   1. AmazonSageMakerFullAccess
+   2. AmazonSageMakerReadOnly
+   3. DataScientist - not recommended
+   4. AdministorAccess - not recommended
+
+#### SageMaker Logging and Monitoring
+
+1. CloudWatch log, monitor and alarm on -
+   1. invocations and latency endpoints
+   2. health of instance nodes (cpu, gpu, memory, etc)
+   3. ground truth (active workers, how much they are doing, etc)
+2. CloudTrail records actions from users, roles, services, etc
+   1. Logs are delivered to s3 if needed for analysing
+
+### SageMaker Resource Management
+
+#### Choosing Instance Type
+
+1. training - deep learning models benefit more from gpu instances (P2, P3), rest models can use  compute instance - c5, ml instances - ml.m4, ml.m5
+2. inference - compute instances - c4, c5, general instances - t2, t3
+3. gpu instances can be really pricey
+
+#### Managed Spot Training
+
+1. spot instances saves 90% more than on-demand instances as per cost
+2. although they can be interrupted as they use unused ec2 capacity in AWS, hence -
+   1. checkpoint your models while training in s3
+3. It increases training time, as we have to wait for spot instance to become available
+
+#### Elastic Inference
+
+1. Lowers ml inference costs by upto 75%
+2. gpu instances are used while training, but after this, unknowingly we tend to use same instance for inference too
+3. Elastic Inference accelerators can be added alongside cpu instances - ml.eia1.medium/large/xlarge/etc
+4. EI accelerators can also be added to notebooks
+5. EI only works with deep learning frameworks like tensorflow, MXNet
+6. works with tensorflow and MXNet pre-built containers
+7. works with custom containers only if thery are built with EI enabled tensorflow or MXNet
+8. works with Image classification and Object detection algorithms
