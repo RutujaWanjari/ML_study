@@ -1632,6 +1632,7 @@ AI powered keyboard - composes whole song from just a melody, only for education
 3. Question - What happens when validation accuracy is less than training accuracy in each step or epoch?
 4. open ec2 instance in local terminal ssh -L 8888:localhost:8888 -i "ec2_key_pair_udemy.pem" ubuntu@ec2-3-135-228-122.us-east-2.compute.amazonaws.com
 
+
 # ML IMPLEMENTATION AND OPERATION
 
 ##### 04/10/2021
@@ -1774,18 +1775,48 @@ Means deploying models to edge devices like smart camera for face detection, com
 
 #### Managed Spot Training
 
-1. spot instances saves 90% more than on-demand instances as per cost
-2. although they can be interrupted as they use unused ec2 capacity in AWS, hence -
+1. good for training, not for inference.
+2. spot instances saves 90% more than on-demand instances as per cost
+3. although they can be interrupted as they use unused ec2 capacity in AWS, hence -
    1. checkpoint your models while training in s3
-3. It increases training time, as we have to wait for spot instance to become available
+4. It increases training time, as we have to wait for spot instance to become available
 
 #### Elastic Inference
 
-1. Lowers ml inference costs by upto 75%
-2. gpu instances are used while training, but after this, unknowingly we tend to use same instance for inference too
-3. Elastic Inference accelerators can be added alongside cpu instances - ml.eia1.medium/large/xlarge/etc
-4. EI accelerators can also be added to notebooks
-5. EI only works with deep learning frameworks like tensorflow, MXNet
-6. works with tensorflow and MXNet pre-built containers
-7. works with custom containers only if thery are built with EI enabled tensorflow or MXNet
-8. works with Image classification and Object detection algorithms
+1. used for inference
+2. Lowers ml inference costs by upto 75%
+3. gpu instances are used while training, but after this, unknowingly we tend to use same instance for inference too
+4. Elastic Inference accelerators can be added alongside cpu instances - ml.eia1.medium/large/xlarge/etc
+5. EI accelerators can also be added to notebooks
+6. EI only works with deep learning frameworks like tensorflow, MXNet
+7. works with tensorflow and MXNet pre-built containers
+8. works with custom containers only if thery are built with EI enabled tensorflow or MXNet
+9. works with Image classification and Object detection algorithms
+
+#### Automatic Scaling
+
+1. used for inference
+2. setup a scaling policy to define target metrics, min/max capacity, cooldown periods
+3. dynamically adjusts number of production variants
+4. works in cloudwatch to monitor performance of inference mnodes and scale them as needed
+5. Load testing is needed before you confirm the scaling policy
+
+#### Availability Zones
+
+1. SageMaker automatically tries to distribute instances accross availability zones
+2. but for this, we need more than 1 instance to work
+3. hence deploy mulitple instances for each production endpoint
+4. Also, if using VPC, make sure to configure it with atleast 2 subnets each in different zones
+
+### Inference Pipelines
+
+1. a way of chaining containers into one pipeline of results
+2. linear sequence of 2-5 conntainers
+3. put any combination of pretrained models in to these contianers
+4. combine pre-processing, predictions, post-processing, etc in this pipeline
+5. spark ML or scikit-learn containers are used
+6. can handle real-time as well as batch transform
+
+### Labs
+
+**Question - Why we use if __name__ == '\__main\__' function ?**
