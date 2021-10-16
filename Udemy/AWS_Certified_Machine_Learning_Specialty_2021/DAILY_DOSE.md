@@ -10,16 +10,16 @@
 4. Data **partitioning** techniques - by date, by product, athena (serverless), Kinesis or Glue (does partinioning for us)
 5. 5 types of s3 **creation**. The more we move towards the less cost it induces. We can also create rules for transitioning from one type of bucket to another. This can be done under Manage bucket section.
 6. **Encryption** - 4 types of encrytion sse-s3, sse-kms, sse-c, client-side encyption. For Ml we mostly use sse-3 and sse-kms
-7. **SSE-3** - (Server SIde Encryption-3) When we store object to s3, s3 generated a key and attaches it to our data.
+7. **SSE-S3** - (Server Side Encryption with S3) When we store object to s3, s3 generated a key and attaches it to our data.
 8. **SSE-KMS** - (Server Side Encrytion Key Management Service CMK (Customer Master Key)) When we store object to s3, KMS-CMK creates encryption which we can manage from our end. This provides more security
-9. For more security, define policies fro accessing bucket. 2 ways - User based - IAM policy (json), Resource based policy - bucket policy, object acl, bucket acl
+9. For more security, define policies for accessing bucket. 2 ways - User based - IAM policy (json), Resource based policy - bucket policy, object acl, bucket acl
 10. bucket policy - very commonly used to grant cross account access
 11. Other security topiccs -
     1. Security via - **VPC** Endpoint gateway - usually when vpc is not configured, all our data goes through public network to read/write s3
     2. If VPC configured, it creates a private network for such reads/writes.
     3. **Note** - check resources like sagemaker to access s3 in such a private network.
     4. Security via AWS event logging and audit is done by **Cloudtrail**
-    5. Security via **Tagging** s3 object via properties with Classification=PHI (Personal Health Information). Onlu right bucket policy or IAM policy can access such objects.
+    5. Security via **Tagging** s3 object via properties with Classification=PHI (Personal Health Information). Only right bucket policy or IAM policy can access such objects.
 12. **TODO - create a bucket with above features**
 
 ### AWS Kinesis
@@ -34,14 +34,14 @@
 
       1. realtime, low latency streaming ingest
       2. Streams are divided into Shards/Partitions
-      3. Hards need to be provisioned in advance
-      4. Data rention 24hrs by default, can be extended to 7 days
+      3. Shards need to be provisioned in advance
+      4. Data retention 24hrs by default, can be extended to 7 days
       5. Due to above point, it provides playback or replay feature; also multiple apps can use same stream
       6. Records can be upto 1MB size
       7. Data cannot be deleted once inserted to Kinesis
       8. Limitations -
          1. Producer - 1MB/s or 1000 messages/s write per shard is allowed, above that you get error 'ProvisionThroughputException'
-         2. Consumer - 2MB/s read per shard or 5api calls/s per shard\
+         2. Consumer - 2MB/s read per shard or 5api calls/s per shard
          3. Higher the no. of Shards, greater the capacity and speed. Hence KS only scales when we add shards over time
    2. Kinesis Analytics -
 
@@ -58,7 +58,7 @@
          2. Hotspots - locates and returs information about dense region in our data. Less changing model. Ex- locate time in a day where max requests are made to an app
    3. Kinesis Firehose -
 
-      1. Load data in s3, Redshift, ElasticSearch, Splunk
+      1. Load data from s3, Redshift, ElasticSearch, Splunk
       2. Fully managed service, no need of administration
       3. Near realtime, 60sec latency minimum
       4. Automatic scaling
@@ -82,6 +82,8 @@
 
 ##### 29/07/2021 - 02/08/2021
 
+AWS Glue is an alternative to Apache NiFi - automating the flow of data between systems with some data processing
+
 1. **Glue Data Catalog**
    1. is a metadata repository for all the tables in your account
    2. Schemas are automatically created, schemas are versioned
@@ -91,7 +93,7 @@
    2. infers schemas and partitions
    3. works for json, parquet, csv, etc
    4. we can run crawler on demand or on schedule
-   5. Based on how we will query s3 bucket, store data according beforehand.
+   5. Based on how we will query s3 bucket, store data accordingly beforehand.
 3. **Glue ETL**
    1. Extract, Transform and Load, ETL allows you to clean data before analysis
    2. Target can be RDS, glue data catalog, s3
@@ -108,8 +110,8 @@
          4. map - add or delete fields, perform external lookups
       2. **Machine Learnig Transformations**
          1. FindMatches ML - Find duplicate data even if the data are not perfectly matching
-      3. Format conversions - csv, json, orc, parquet, xml
-      4. Apache spark transformations (ex- k-means)
+      3. **Format conversions** - csv, json, orc, parquet, xml
+      4. **Apache spark transformations** (ex- k-means)
 
 ### AWS Athena
 
@@ -134,14 +136,15 @@
    4. Data is orgainized in row
    5. main purpose is to to store data
 3. Dynamodb -
-   1. NoSDL - NotOnlySQL (some systems stores sql plus document data) or Not SQL (not sql only document data is stores)
+   1. NoSQL - NotOnlySQL
+      (some systems stores sql plus document data) or Not SQL (not sql only document data is stored)
    2. Useful to store ml outputs
    3. serverless
    4. provisioned read/write capacity
 4. s3 -
    1. object storage
    2. serverless
-   3. infite storage
+   3. infinite storage
    4. integration with almost all aws services
 5. elastic search -
    1. indexing of data
@@ -153,7 +156,7 @@
 
 ### AWS Data pipelines
 
-1. ETL sesrvice
+1. ETL service
 2. move data from one source to other
 3. integration with Redshift, RDS, s3, Dynamodb, EMR
 4. manage task dependency
@@ -168,8 +171,8 @@
 2. Used for performing computational or etl or any kind of job in batches
 3. No need of provisioning from user. Dynamically provisioned
 4. All resources like ec2 are dynamically created as per the job
-5. User does not have to manage clusters, it is serverless
-6. Schedule batch jobs using cloudwatch or prchestrate batch jobs using AWS step functions
+5. User does not have to manage clusters, it is serverless (ecs fargate)
+6. Schedule batch jobs using cloudwatch or orchestrate batch jobs using AWS step functions
 
 ### AWS Database Migration Service
 
@@ -182,13 +185,14 @@
 
 ### AWS Step Function
 
-1. Used for visualizing all the steps to perform inyour application
+1. Used for visualizing all the steps to perform in your application
 2. It will show you flowchart with knowledge of which aws service to use at which point in building your ML application
 3. Used to design workflows
-4. advanced error handling and retry mechanism out of the code
-5. audit of the history of workflows
-6. ability to wait for an arbitary amount of time
-7. Max execution time of state machine is 1 year
+4. serverless
+5. advanced error handling and retry mechanism out of the code
+6. audit of the history of workflows
+7. ability to wait for an arbitary amount of time
+8. Max execution time of state machine is 1 year
 
 # EXPLORATORY DATA ANALYSIS
 
@@ -229,10 +233,10 @@
       2. **Continuous** - rainfall
 2. **Categorical**
    1. yes or no, fruit classes
-   2. Often one class has no corelation with other class. Like we cannot say apply is better/sweeter than orange. They are not comparable in that sense.
+   2. Often one class has no corelation with other class. Like we cannot say apply is bitter/sweeter than orange. They are not comparable in that sense.
    3. Often this is converted into numerical in machine learning applications
 3. **Ordinal**
-   1. Mixture of of categorical and numerical
+   1. Mixture of categorical and numerical
    2. Ex - star ratings (1-5 are numerical categories), also these numbers have corelation. Like 5 is better than 4.
 
 ### Data Distributions
@@ -240,7 +244,7 @@
 1. Normal Distribution - continuous data
 2. poisson distribution has Probability Mass Funciton - discrete data
 3. Binomial Distribution - discrete data
-   1. Distrbute data in such a way where the results is from only 2 case
+   1. Distrbute data in such a way where only 2 cases exist
    2. Ex - coin toss
 4. Bernouli Distribution - discrete data
    1. Special case of Binomial distribution, consists of single trial
@@ -249,7 +253,7 @@
 
 ### Time series analysis
 
-1. Siries of datapoints over time
+1. Series of datapoints over time
 2. discrete samples taken over dicrete point of time
 3. Seasonality - its a feature in your data that shows changes as per seasons
 4. Trends - its a feature in your data that shows patterns as per time
@@ -264,7 +268,7 @@
 3. serverless
 4. Works on structured, unstructured, semistructured data
 5. Athena uses Presto technology underneath
-6. Supportin data fromats - csv, orc, parquet, json, avro
+6. Supporting data fromats - csv, orc, parquet, json, avro
 7. Ex applications - adhoc querying of weblogs, analyzing cloudtrail/cloudwatch logs in s3
 8. Integration with jupyter, quicksight
 9. $5 per TB scanned.
@@ -311,14 +315,14 @@
 11. **Hadoop** consistes of -
     1. HDFS - Distributed File system, stores multpile copies of data in distributed clusters or node so that data is not lost
     2. YARN - Yet another resource negotiator, centrally manages cluster
-    3. MapReduce - software framework to easily write vast amount of data paralally, icludes mapper function(used for transforming; mapping and preparing data) and reduce function(used for compacting and aggregating data into one whole dataset)
-    4. Spark - These days Apache spark has largely taken the place of mapreduce, faster alternative to mapreduce, in-memory caching, more smart than mapreduce for data processing, spped, code reuse for batch processing and ml processing
+    3. MapReduce - software framework to easily write vast amount of data paralally, includes mapper function(used for transforming; mapping and preparing data) and reduce function(used for compacting and aggregating data into one whole dataset)
+    4. Spark - These days Apache spark has largely taken the place of mapreduce, faster alternative to mapreduce, in-memory caching, more smart than mapreduce for data processing, speed, code reuse for batch processing and ml processing
     5. Spark components - Spark streaming, Spark sql, MLlib, GraphX
     6. **Spark MLlib** introduces ml libraries, data is stored distributedly and scalable, parallel processing.
     7. Models include - classification (NaiveBayes, LogisticRegression), Regression, Decision Tress, Clustering (Kmeans), Recommendation Engine (ALS), Topic Modellling (LDA), Ml workflow utilities (pipeline, feature transformation), SVD,PCS, statistics
     8. Spark streaming can be integrated with Kinesis
     9. Spark + Zepplin allows you to run code in notebook env, with all data science tools needed
-    10. Spark Notebook, similar concept like above but more integrated with AWS, notebooks are backedup in s3, vps, accessed only via AWS ocnsole, integrated with anaconda, pyspark, python, sparksql, scala
+    10. Spark Notebook, similar concept like above but more integrated with AWS, notebooks are backedup in s3, vps, accessed only via AWS console, integrated with anaconda, pyspark, python, sparksql, scala
     11. These are all hosted outside EMR, no additional charges for EMR users
     12. EMR secuirty - IAM policies, IAM roles, Kerberos, SSH
 
@@ -332,7 +336,7 @@
 4. Andrew Ng- "Applied machine learning is basically feature engineering"
 5. **Why we do Feature engineering - Because we have curse of dimensionality**
    1. Each feature is an axis, which means 1 dimension.
-   2. Now if we say, y is an output(salary) and x is an input(age)., it means the dimesion is 2
+   2. Now if we say, y is an output(salary) and x is an input(age)., it means the dimension is 2
    3. But when we add more features like yrs of experience, designation, location, etc, axis increases and hence the dimension increases.
    4. More the dimensions, sparse the relevant information to predict something, more the space to look for proper solution. This results in bad output.
    5. **To reduce dimesion, we have PCA and K-Means**
@@ -359,14 +363,14 @@
       2. For ex- fraud detection will have less data for frauds and more data for normal transactions.
       3. Also, positive does not mean normal transactions, it means the thing you are trying to detect has happend. If you are detecting fraud, then fraud is positive, if you are detecting normal transaction, then that is positive. This is very inportant in understanding confusion matrix.
       4. **Oversampling** -
-         1. duplicate values randomly in lesser class data
+         1. duplicate the values randomly in lesser class data
       5. **Undersampling** -
          1. not the best practice, as we might lose important information
       6. **SMOTE** -
          1. Synthetic Minority Oversampling Technique
          2. Artificially create new samples using K-nn
          3. Knn will find the nearest neighbour and just get mean of the result
-         4. It generates new data for undersampled class and reduce data fro oversampled class
+         4. It generates new data for undersampled class and reduce data for oversampled class
       7. **Adjust Threshold**
          1. Mostly works in cases where we get prediction score, this score helps to find a particular threshold beyond which we can say fraud or not fraud.
          2. For ex - if we want to reduce FP, increase threshold. It will guarantee reduced FPs but might increase FNs.
@@ -385,25 +389,25 @@
       * Now find the differences from the mean: (-3.4, -0.4, 0.6, -0.4, 3.6)
       * Find the squared differences: (11.56, 0.16, 0.36, 0.16, 12.96)
       * Find the average of the squared differences:
-      * 07 (11.56 + 0.16 + 0.36 + 0.16 + 12.96) /5 = 5.04
+      * 07 (11.56 + 0.16 + 0.36 + 0.16 + 12.96) /5 = **5.04**
 2. Standard Deviation - used to identify outliers
 
    1. Formula explanation - square root of variance
    2. With above example -
-      * Standard deviation of (1, 4, 5, 4, 8) is **2.24**
+      * Standard deviation of (1, 4, 5, 4, 8) = squareroot of 5.04 is **2.24**
    3. So the data points that lie more than 1 standard deviation far from mean is considred as outlier
-   4. Example - mena(4.4) +/- std(2.24) = **2.16/6.64**
+   4. Example - mean(4.4) +/- std(2.24) = **2.16/6.64**
    5. Hence datapoints 1 and 8 are outliers
    6. We can use more than 1 sigma to +/- with the mean to identify outliers
    7. **The important business logic to think is how many sigmas away from the mean should be our threshold value to identify outliers.**
-   8. Based on problem statement, outliers ccan be removed from training data
+   8. Based on problem statement, outliers can be removed from training data
    9. AWS provides Random Cut Forest algorithm for outlier detection widely used, integrated with kinesis analytics, sagemaker, quicksight, etc
    10. Python code - np.mean, np.median, np.std, etc
 
 ### Binning
 
 1. Binning refers to converting numerical data into categorical like age.
-2. Instead of using all values of age field, we can caonvert into categories of 1-20, 21-40, 41-60, etc
+2. Instead of using all values of age field, we can convert into categories of 1-20, 21-40, 41-60, etc
 3. Above categories can be then one hot encoded to 0, 1, 2, 3
 4. This technique is used when we have uncertaininity in exact measurements of datapoints.
 5. Also used when the specificity of datapoint is not very helpful in training model.
@@ -422,7 +426,7 @@
 ### Scaling/Normalizing
 
 1. Most models prefer their feature data to be distributed around 0, mostly neural networks
-2. Most models require atleast their data should be scaled to comarable values, otherwise features with higher magnitude will attract more focus than other, for example salary feature might get more attention than age feature, if not scaled
+2. Most models require atleast their data should be scaled to comparable values, otherwise features with higher magnitude will attract more focus than other, for example salary feature might get more attention than age feature, if not scaled
 3. MinmaxScaler (-3 to 3)
 4. Remember to scale while prediction too
 
@@ -433,12 +437,41 @@
 ### Sagemaker Ground Truth
 
 1. It's a service provided by AWS which manages and deligates your task of finding new data or features for your data or even label your data to other humans
-2. Also, in case of labeling task, it starts creating a model parallely which learns to label your data based on what other humans labelled, and with time it starrts to label by itself and only send confusing data to humans for labelling. This saves cost upto 70%.
-3. Who are these humans - mechanical turk or your own internal team or professional labelling companies
+2. Also, in case of labeling task, it starts creating a model parallely which learns to label your data based on what other humans labelled, and with time it starts to label by itself and only send confusing data to humans for labelling. This saves cost upto 70%.
+3. Who are these humans - AWS Mechanical Turk (MTurk) or your own internal team or professional labelling companies
 4. Instead of humans we can also use AWS services -
    1. AWS Rekognition - Image processing and image classification
-   2. AWS comprehend - Text analysis, topic modelling, classification based on topic or sentiments
+   2. AWS Comprehend - Text analysis, topic modelling, classification based on topic or sentiments
    3. Any pretrained model or unsupervised technique that might be useful
+
+### Lab
+
+#### TF-IDF (Term Frequency - Inverse Document Frequency)
+
+1. figures out what terms are most relevant to a given document
+2. it's a metrics used in search topics
+3. **term frequency** measures how often a word occurs in a document. If it occurs more frequently, then maybe the word is important to that document's meaning
+4. **document frequency** measures how often a word occurs in entire set of documents, ex - all of wikipedia or every web page, this tells about common words that just appear everywhere, like "a", "is"
+5. so tf-idf = tf/df  or  tfx1/df  ie  tf*inverse_df
+6. meaning, how often a word occurs in the document over how often the word occurs everywhere
+7. since word frequencies are distributed exponentially, **we use the log of tf-idf**
+8. this gives better weighting of word's overall popularity
+9. limitations with tf-idf-
+   1. It assumes a document is just a bag of words, relation between these words are not taken into account
+   2. parsing the docs into bag of words is a big task
+   3. what to do when words are represented in hash or numbers for efficiency
+   4. what about synonyms? various tenses? abbreviation? capitalizations? misspellings?
+   5. resolving all these issue at scale is hard - this is where **spark comes in picture**
+   6. solution for bag of words issue -
+      1. unigrams, bigrams, n-grams - exam has question to create unigram and bigram matrix. where dimesion of the matrix will be rows/columns ie number of docs(sentences) / number of columns of grams
+10. Commands for running pyspark to process bigdata -
+    1. open EMR in aws
+    2. create cluster with m4.large
+    3. ssh myIP in inbound traffic
+    4. switchyomega for proxy
+    5. input tf-idf.json file from local in omega
+    6. in local cmd -> ssh -i "<pem key path>" -N -D <anylocalport> hadoop@ec2-18-117-135-6.us-east-2.compute.amazonaws.com
+    7. terminal will show no output, but you can use public ip from emr cluster and get the spark notebook visible
 
 # MODELING
 
@@ -450,20 +483,20 @@
 2. Deals with understanding how our brains work.
 3. There are numerous amount of neurons interconnected to each other in layers.
 4. Initial layer takes input from outside world like senses (smell, touch, vision, sound, etc) and passes on its output or understanding to other layer and so on till we reach a certain conclusion.
-5. Each layer consistes of multiple neurons
-6. More the complexity better the conciousness
+5. Each layer consists of multiple neurons
+6. More the complexity better the conciousness of the model
 7. Although increasing complexity do not guarantee better accuracy or PR curve
 8. In the brain, layers are stacked as **cortical columns** consisting of numerous mini-columns which again consists of numerous hyper columns
 9. NNs learn paralelly
-10. Popular frameworks of NN used by AWS - Mxnet and tensorflow and Keras
+10. Popular frameworks of NN used by AWS - Mxnet, tensorflow and Keras
 11. GPU is used more than CPU for NN because - GPU architecture is similar to cortical columns, also they do parallel computation faster than CPU
 12. Keras (some info)-
-    1. Dense -(number of neurons, input_dimension(total features/inputs))
+    1. Dense - (number of neurons, input_dimension(total features/inputs))
     2. Dropout - (for regularization)
 13. Types of Neural Networks
     1. Feed Forward NN (simple, no backpropagation)
-    2. Convolutional NN (mostly used for images as they cal deal 2D datasets. (If stop sign in diagram, use CNN; they use backpropagation))
-    3. Recurrent NN (deals with sequences of time or anytype of data that has order in it. stock prices, sentence translation, LSTM, GRU)
+    2. Convolutional NN (mostly used for images as they can deal with 2D datasets. (If stop sign in diagram, use CNN; they use backpropagation))
+    3. Recurrent NN (deals with sequences of time or any type of data that has order in it. stock prices, sentence translation, LSTM, GRU)
 
 ### Activation Functions
 
@@ -478,7 +511,7 @@
    1. Outputs positive value if input=True, else outputs negative value
    2. It does not handle multiple classification
    3. Does not do mathematically well, as calculating derivative of straight line might cause some imbalance
-4. **Non liner activation functions** -
+4. **Non linear activation functions** -
    1. Create complex mappings between inputs and outputs
    2. Allows backpropagation
    3. Multiple classification handled
@@ -487,7 +520,7 @@
       1. Nice and smooth as the derivatives can be calculated
       2. Scales everything between 0 to 1 (Sigmoid/Logistic)
       3. Scales everything between -1 to 1 (TanH)
-      4. TanH is more commonly used than other two, as it is good to avverage everything around 0
+      4. TanH is more commonly used than other two, as it is good to average everything around 0
       5. Changes very slowly for very high values or very low values, This causes vanishing gradient problem
       6. Computationally expensive
    6. **Rectified Linear Unit (ReLU)**
@@ -497,7 +530,7 @@
       4. When this happens for most of neurons, they start dying, occurring Dying ReLU problem
       5. Easy and computationally fast
    7. **Leaky ReLU**
-      1. Solves dying ReLU problem bby outputting a small slope of negative output when the input is 0 or negative, instead of flatly outputting 0.
+      1. Solves dying ReLU problem by outputting a small slope of negative output when the input is 0 or negative, instead of flatly outputting 0.
       2. Problem is how much slope is best cannot be identified.
       3. Easy and computationaly fast
    8. **Parametric ReLU (PReLU)**
@@ -525,29 +558,29 @@
           2. If ReLU does not work, go with Leaky ReLU
           3. If above does not work, go with PReLU, Maxout
           4. Swish should be used for deep networks
-          5. Sigmoid is used when we need multiple c outputs per neuron
+          5. Sigmoid is used when we need multiple class outputs per neuron
 
 ### Convolutional Neural Network (CNN)
 
 1. Inspired by the biology of visual cortex
 2. Deals with understanding how the brain processes images from our retina
-3. CNN is used when we do not know features. CNN can sccan the data and locate the features to train. This is known as **feature location invariant**
+3. CNN is used when we do not know features. CNN can scan the data and locate the features to train. This is known as **feature location invariant**
 4. Convolution = breaking a piece into little chunks
 5. Used for -
    1. Finding features in images
    2. Image Processing and Image classification
    3. Sentence classification
    4. Machine translation
-   5. Sentimment analysis
+   5. Sentiment analysis
 6. Consists of -
    1. subsampling - local receptive fields (square shaped) are the the group of neurons that only respond to a part of what our eyes see
    2. convolution - breaking whole picture into small parts, overlapping each other to cover entire picture
-   3. While dealing whith colored images, multiply everything by 3 for red, green, blue
+   3. While dealing with colored images, multiply everything by 3 for red, green, blue
 7. So CNN means - breaking data into smaller parts, assembling them according to shapes, size, etc, analyzing them, detecting patterns.
-8. CNN with KEras and Tensorflow
+8. CNN with Keras and Tensorflow
    1. Source data must of appropriate dimensions - length x width x color channels
    2. Conv Layer -> Conv1D - textual data, Conv2D - image data, Conv3D - 3d volumetric data
-   3. Maxpooling Layer -> - as cnn is very compute intensive, we need to downsie our data by getting only the maximum value in 1 block/convlution
+   3. Maxpooling Layer -> - as cnn is very compute intensive, we need to downsize our data by getting only the maximum value in 1 block/convolution
    4. Flatten Layer -> At one point in our nn, we will have to pass our data in 1D to the neurons or perceptrons. This is done by this layer
    5. Typical algo we follow ->
       1. Conv2D
@@ -556,7 +589,7 @@
       4. Flatten
       5. Dropout
       6. Dense (hidden layer of neurons)
-      7. Droput
+      7. Dropout
       8. Softmax (get final output at last layer)
 9. CNNs are very resource intensive - cpu, gpu and ram
 10. Lots of hyperparams, hence tunning becomes hard
@@ -577,7 +610,7 @@
 6. THis workflow provides better learning with time
 7. A layer of recurrent neurons -> sending output of 1 layer back to all input neurons of this layer
 8. RNN can deal with 4 different combinations (topologies)-
-   1. **Sequence to Sequence** -> ex- input is today's stock, output is future stock
+   1. **Sequence to Sequence** -> ex - input is today's stock, output is future stock
    2. **Sequence to Vector** -> ex - input is sentence, output is sentiment
    3. **Vector to Sequence** -> ex - input is image(vector representation), output is description
    4. **Encoder - Deccoder** -> ex - input is sequence (french lang), convert to vector, output is sequence(english lang)
@@ -607,14 +640,14 @@
 2. **Batch size**
 
    1. number of training samples used within 1 epoch
-   2. **small batch size does not get stuck in local minima (area between slope and rise)**
-   3. **large batch size can converge into wrong solution**
+   2. **small batch size does not get stuck in local minima (area between slope and rise) but train time might increase**
+   3. **large batch size can converge into wrong solution by getting stuck to local minima**
 
 ### Regularization techniques in NN
 
 1. Regularization is any technique that prevents overfitting
 2. Overfitting is overlearning or mugging up, thus unable to understand realworld or new dataset
-3. Overfitting happens because of - too many neurons, too many epochs, too many layers, use of nn instead of simpler models like LR.
+3. **Overfitting happens because of - too many neurons, too many epochs, too many layers, use of nn instead of simpler models like LR.**
 4. Simplest solution is **use less neurons/epochs/ use simpler model**
 5. If NN is used, then we can use the technique called **Dropout**
 6. Dropout removes some of the neurons giving more randomness to learning
@@ -622,7 +655,7 @@
 
 ### Vanishing Gradient Problem
 
-1. When the gradient or slope of learning curve approaches 0, we the gradient is vanishing, meaning there is no learning happening meaning we are not reaching towards our milestone
+1. When the gradient or slope of learning curve approaches 0, we say the gradient is vanishing, meaning there is no learning happening meaning we are not reaching towards our milestone
 2. This slows down training also can cause numerical errors
 3. Its greater problem in RNN and deep nn as these vanishing gradients propagate to deeper layers
 4. Opposite problem - exploding gradient
@@ -656,35 +689,39 @@
 1. Actuals in column and Predicted in rows (mostly, can be differently stated too)
 2. TP FP
 3. FN TN
-4. **Recall**
+4. **False Positive** - We predicted yes, but they don't actually have the disease/attack/etc
+5. **False Negative** - We predicted no, but they actually do have the disease/attack/etc
+6. **Recall**
    1. aka sensitivity, **true positive rate**, completeness
    2. TP / (TP + FN)
    3. Derives percent of positives correctly predicted
    4. Good metrics to consider when FN is important, ex fraud/attack detection
-5. **Precision**
+7. **Precision**
    1. aka correct positives
    2. TP / (TP + FP)
    3. Derives percent of relevancy (relevant results)
    4. Good metrics to consider when FP is important, ex drug usage
-6. **Specificity**
+8. **Specificity**
    1. aka **true negative rate**
    2. TN / (TN+FP)
-7. **F1 score**
+9. **F1 score**
    1. aka
    2. 2TP / (2TP + FP + FN)
    3. 2 * ((Precision*Recall) / (Precision+Recall))
    4. Good metric to consider when we care about both preciosn and recall
-8. **RMSE**
-   1. Root Mean Squared Error
-   2. only cares about right and wrong answers
-   3. used in Fake vs real image
-9. **ROC curve (Receiver Operating Characteristic curve)**
-   1. Its a plot of True positive rate (recall) vs False positive rate
-   2. There is diagonal line from point(0,0) to (1,1) in graph
-   3. If the curve falls above this line, then the model is good classified
-   4. More the curve bents toward upper left corner (0,1), better the model
-10. **AUC (Area Under Curve)**
-    1. Are under ROC curve
+10. **RMSE**
+    1. Root Mean Squared Error
+    2. only cares about right and wrong answers
+    3. used in Fake vs real image
+11. **False Positive Rate**
+    1. FP/(FP+TN)
+12. **ROC curve (Receiver Operating Characteristic curve)**
+    1. Its a plot of True positive rate (recall) vs False positive rate
+    2. There is diagonal line from point(0,0) to (1,1) in graph
+    3. If the curve falls above this line, then the model is good classified
+    4. More the curve bents toward upper left corner (0,1), better the model
+13. **AUC (Area Under Curve)**
+    1. Area under ROC curve
     2. If AUC is below 0.5 or less (below the ROC diagonal), the model is useless
     3. More the AUC towards 1.0 ie trying to create a perfect right angle, better the model
 
@@ -725,7 +762,7 @@
    1. on demand endpoint for single prediction,
    2. sgmkr batch transform to get entire dataset predicted
    3. sgmkr neo for edge devices
-   4. elastic inference for deepl learning models
+   4. elastic inference for deep learning models
 
 ### Sagemaker Built-in Algorithms
 
@@ -764,7 +801,7 @@
 
 1. Extreme Gradient Boosting is a boosted group of decision trees
 2. New trees are made to correct the errors of previous trees, thus minimizing the loss everytime. It used gradient descent to do so
-3. Currently the fastest algo in themarket, also winning many kaggle competetions
+3. Currently the fastest algo in the market, also winning many kaggle competetions
 4. Can be used for classification and regression (for predicting numerical values using regresion trees)
 5. Data format supported -
    1. XGBoost is originally opensource and AWS just inhereted it,
@@ -780,10 +817,10 @@
    5. lambda - l2
    6. eval_metric - auc, rmse, error, etc. (auc when FP elimination is more imp)
    7. scale_pos_weight - balance unbalanced data
-   8. max_depth - sets max number of depth (default is 6)
+   8. **max_depth** - sets max number of depth (default is 6)
 8. instance types -
-   1. M5 is good choice, because XGBoost is memory bound not compute bound
-   2. If gpu is used then P# is good, (set param tree_method='gpu_hist')
+   1. **M5 is good choice, because XGBoost is memory bound not compute bound**
+   2. If gpu is used then P3 is good, (set param tree_method='gpu_hist')
    3. If cpu is used, then muliple instances are required
 
 #### Seq2Seq
@@ -794,10 +831,10 @@
 4. Speech to Text conversion
 5. Implemented with RNN or CNN
 6. Data format supported -
-   1. RecordIO-Protobuf - tokens must be integer (in most algos, float is required). Also this format is best for this algo
+   1. **RecordIO-Protobuf - tokens must be integer** (in most algos, float is required). Also this format is best for this algo
    2. You cannot pass just a text file with words in it. A separate tokenized file is required also a vocabulary file is essential
-   3. A sample code is provided by sagemaker which helps in converting norma text file with words into protobuf format
-   4. Requires - trainingg data, validation data and vocabulary file
+   3. A sample code is provided by sagemaker which helps in converting normal text file with words into protobuf format
+   4. Requires - training data, validation data and vocabulary file
 7. how to use -
    1. There are already machine translation models available use them
 8. Imp hyperparams -
@@ -805,10 +842,10 @@
    2. optimizer_type
    3. learning_rate
    4. num_layers_encoder
-   5. num_layers_deocoder
+   5. num_layers_decoder
    6. can optimize on-
       1. accuracy - compares against validation data provided
-      2. BLEU score - compares against multiple translation or examples given
+      2. BLEU score - (Bilingual Evaluation Understudy) compares against multiple translation or examples given
       3. perplexity - cross entropy
    7. Instance -
       1. can only use gpu instances like p3
@@ -857,13 +894,13 @@
    4. it helps in NLP but not an NLP algo, it's a data processing lib
    5. It only works on individual words, not on entire sentence or document
 3. Training input -
-   1. for supervised mode, data should have \__ label __ as the first word follwed by label and the sentence
-   2. for word2vec, data should be a text file with 1 sentence per line
+   1. for supervised mode, data should have \__ label __ as the first word followed by label and the sentence
+   2. **for word2vec, data should be a text file with 1 sentence per line**
    3. also accepts **augmented text format** - {"source":"bhvh", "label":1}
 4. How to use -
    1. Cbow (continuous bag of words) - bag of words, order does not matter
    2. skip-gram - n grams, order of words matters
-   3. batch skip-gram - distributedcomputation over many CPUs
+   3. batch skip-gram - distributed computation over many CPUs
 5. Important hyperparams -
    1. Word2Vec-
       1. mode (cbow, skipgram, batch_skipgram)
@@ -883,63 +920,65 @@
 
 #### Object2Vec
 
-1. Embedding layer, works on entire documents
-2. Low dimensional representation of higher dimensional data
-3. It is basically word2vec, but generalized to handle things other than words
-4. It is unsupervised
-5. Applications -
+1. Neural Network
+2. Embedding layer, works on entire documents
+3. Low dimensional representation of higher dimensional data
+4. It is basically word2vec, but generalized to handle things other than words
+5. It is unsupervised
+6. Applications -
    1. recommendation system,
    2. visualize clusters
    3. compute nearest neighbours of objects
    4. genre prediction
-6. inputs -
+7. inputs -
    1. data must be tokenized into integers
-   2. training data consists of pairs of tokens and/or sequence of tokens
+   2. **training data consists of pairs of tokens and/or sequence of tokens**
       1. sentence pair
       2. product pair
       3. customer pair
       4. label and sequence pair
       5. user and item pair
-7. how to use -
+8. how to use -
    1. process data into json lines and shuffle it
    2. train with 2 input channels, 2 encoders and 1 comparator
    3. encoder can be -
       1. average pooled embedding
       2. cnn
       3. bidirectional lstm
-   4. comparator is follwed by a feed forward network
-8. important hyperparams
+   4. comparator is followed by a feed forward network
+9. important hyperparams
    1. usual deep learnign stuff - epoch, dropout, learning rate, batch_size, activation_function, epoch, optimizer, etc
    2. enc1_network, enc2_network - for this choose hcnn, bilstm, pooled_embedding
-9. instance -
-   1. can only train on single machine
-   2. cpu or gpu (multiple)
-   3. can use ml.p5, ml.m5
-   4. for inference use ml.p2.2xlarge - use INFERENCE_PREFERRED_MODE env variable for optimizing encoder embeddings rather than classification or regression
+10. instance -
+    1. can only train on single machine
+    2. cpu or gpu (multiple)
+    3. can use ml.p5, ml.m5
+    4. for inference use ml.p2.2xlarge - use INFERENCE_PREFERRED_MODE env variable for optimizing encoder embeddings rather than classification or regression
 
 #### Object Detection
 
 1. Identify all obejcts in image with bounding boxes
-2. detects and classifies object with single deep neural network
-3. classes are accompanied by confidence scores ie prediction score
-4. can train from scratch or use pretrained model like ImageNet
-5. Extending ImageNet model is also possible
-6. Input -
+2. supervised
+3. detects and classifies object with single deep neural network
+4. classes are accompanied by confidence scores ie prediction score
+5. can train from scratch or use pretrained model like ImageNet
+6. Extending ImageNet model is also possible
+7. Input -
    1. recordIO or image format (jpg/png/jpeg)
-   2. with image format, also provide a json file for annotation data for each image - meaning details about what objects are in the image and w\here exactly, it's size, name, etc
-7. how it is used -
+   2. with image format, also provide a json file for annotation data for each image - meaning details about what objects are in the image and where exactly, it's size, name, etc
+8. how it is used -
    1. uses a CNN with Single Shot multibox Detector algorithm
       1. the base cnn can be VSG-16 or resnet-50 (cnn topologies that are already validated by the world)
    2. takes an image as input and outputs all the objects detectd with bounding box and respective scores
    3. transfer learning mode ie incremental training ie using pretrained model as base, and then extending the model or retraining over it
-   4. uses flip, rescale, jitter the training images to avoid overfitting
-8. important hyperparams -
+   4. uses flip, rescale, jitter on the training images to avoid overfitting
+9. important hyperparams -
    1. mini_batch_size
    2. learning_rate
    3. optimizer (adam, sgd, adadelta, rmsprop)
-9. instance -
-   1. gpu for training - ml.p2 and ml.p3
-   2. cpur or gpu for inference - c5, m5, p2, p3 all ok
+10. instance -
+    1. gpu for training - ml.p2 and ml.p3
+    2. cpu or gpu for inference - c5, m5, p2, p3 all ok
 
 #### Image Classification
 
@@ -950,13 +989,13 @@
    1. If training from scratch, use APache MXNet RecordIO
       1. Not protobuf
       2. This is for interoperability with other deep learning frameworks
-   2. Or raw jpg/png/jpef images
+   2. Or raw jpg/png/jpeg images
    3. For image format, also feed .lst files to associate image index, class label, and path to image
    4. Augmented Manifest Image Format in Pipe mode (pipe mode is allowing data to use from s3 instead of copying all data into current code/system)
 5. how to use -
    1. under the hood it is actually a ResNet CNN
    2. full training mode - initialize network with random weights
-   3. transfer learnign mode -
+   3. transfer learning mode -
       1. initialize network with pre-trained weights
       2. top fully connected layer is initiated with random weights
       3. network is fine tuned with new training data
@@ -965,22 +1004,22 @@
    1. usual params of deep learning ie batch_size, optimizer, learning_rate, etc
    2. optimizer specific params - weight decay, beta1, beta2, gamma, eps
 7. instance -
-   1. training - gpu - mltigpu and multi machine is ok, p2 or p3
+   1. training - gpu - multigpu and multi machine is ok, p2 or p3
    2. inference - cpu or gpu - c4, p2, p3
 
 #### Semantic Segmentation
 
-1. Pixel level object classification - tells which object in an image a particular pixel belongs to
+1. **Pixel level object classification** - tells which object in an image a particular pixel belongs to
 2. applications -
-   1. self driving vehicle
+   1. self driving vehicle (autonomous car)
    2. medical image diagnostic
    3. robot sensing
-3. produces a segmentation mask -
+3. Because the semantic segmentation algorithm classifies every pixel in an image, it also provides information about the shapes of the objects contained in the image. The segmentation output is represented as a grayscale image, called a *segmentation mask*
 4. input -
    1. For both training and validation - jpg images or png annotations
    2. label maps to descibe annotations
    3. for inference - jpg image accepted
-   4. augmented image format iwth pipe mode
+   4. augmented image format with pipe mode
 5. how to use -
    1. under the hood it is built on Gluon and GluonCV, which is built over Apache MXNet
    2. choice of 3 algos-
@@ -993,7 +1032,7 @@
       3. Both of these are trained on ImageNet
    4. Training from scratch and embedded training both supported
 6. important hyperparams -
-   1. deep learning usual like optimizer, learning_rate, epoch, batch_size
+   1. deep learning usuals like optimizer, learning_rate, epoch, batch_size
    2. algorithm
    3. backbone
 7. instance -
@@ -1003,47 +1042,49 @@
 #### Random Cut Forest
 
 1. Anomaly Detection
-2. detrct unexpected spikes in timeseries data
+2. detect unexpected spikes in timeseries data
 3. breaks in periodicity
-4. solves unclassifiable data points
-5. for every data point, anomalous score is calcualted
-6. based on algo develloped by Amazon
-7. input -
+4. unsupervised
+5. solves unclassifiable data points
+6. for every data point, anomalous score is calculated
+7. based on random forest, this algo is developed by Amazon. hence used in many aws services
+8. input -
    1. recordIO-protobuf or csv
    2. can use file or pipe mode on either
    3. optional test channel on calulating metrics like f1, accuracy, precision, recall on labelled data (anomaly or not)
    4. as it is an unsupervised algo, we can use above test channel to check our predicitons against any validation or test data
-8. how to use -
-   1. creates a forest of trees, where each tree is partitioning the data (like decsion tree)
-   2. looks at any expected change in the complexity of tree after a new data point is added.
+9. how to use -
+   1. creates a forest of trees, where each tree is partitioning the data (like decision tree)
+   2. looks at any expected change in the structure of tree after a new data point is added.
    3. meaning - if a new data point is added, which causes the whole bunch of branches to form off, then the new data point might be anomalous
    4. data is sampled randomly (hence 'Random' cut forest)
-   5. tehn trained
+   5. then trained
    6. RCF also shows up in Kinesis Analytics
-9. Important hyperparams -
-   1. num_samples - more the number of trees, less the noise
-   2. num_samples_per_tree - should be chosen such that 1/num_smples_per_tree approximates to the ratio of anomalous data against normal data
-10. instance -
+10. Important hyperparams -
+    1. num_trees - more the number of trees, less the noise
+    2. num_samples_per_tree - should be chosen such that 1/num_smples_per_tree approximates to the ratio of anomalous data against normal data
+    3. feature_dim - The number of features in the data set. (If you use the [Random Cut Forest](https://sagemaker.readthedocs.io/en/stable/algorithms/randomcutforest.html) estimator, this value is calculated for you and need not be specified.)
+11. instance -
     1. training - cpu only (NO gpu) - m5, c4, c5
     2. inference - ml.c5.xl
 
 #### Neural Topic Model
 
-2 models provided by sagemaker - Neural Topic Model (NTM) and Latent Dirichlet Allocation (LDA)
+2 models provided by sagemaker for topic modelling - Neural Topic Model (NTM) and Latent Dirichlet Allocation (LDA)
 
 1. What the document or description is about?
-2. unsupervised
+2. unsupervised, based on NN
 3. the document does not necessarily be human readable format
 4. organize, summarize, classify documents as per topics
 5. It's not just TF/IDF (which is used to search a term)
-6. for ex, 'bike', 'car', 'mileage', 'train', 'speed' might categorize into 1 group or topic - "transportation", although it might not know to call it that (because we did not provide any label as it is unsupervised)
+6. for ex, 'bike', 'car', 'mileage', 'train', 'speed' might categorize into 1 group or topic - "transportation", although it might not know to call it that (because we did not provide any label as it is unsupervised), will be in another group
 7. under the hood Neural Variational Inference
 8. input -
    1. recordIO-protobuf or csv
    2. four channels -
       1. "train" is required
       2. "test", "validation", "auxillary" are optional
-   3. raw texts cannot passed directly as input, hence forst process the words into integers
+   3. raw texts cannot passed directly as input, hence first process the words into integers
       1. every document must contain count of every word in the vocabulary in csv
       2. "auxillary" channel is used for vocabulary
    4. file or pipe mode both supported
@@ -1053,15 +1094,16 @@
 10. important hyperparams -
     1. mini_batch_size and learning_rate - lowering these can reduce validation loss, but training time increases
     2. num_topics
+    3. feature_dim - The vocabulary size of the dataset.
 11. instance -
     1. training - cpu or gpu, gpu recommended, but cpu cheaper
     2. inference - cpu
 
-#### Latent Derichlet Allocation
+#### Latent Dirichlet Allocation
 
 1. Another topic modelling algo, which is not based on neural network
 2. unsupervised
-3. can be used for problems other than words -
+3. can be used for problems other than words (It can be used for words too, but not as efficient as NTM)-
    1. customer grouping based on purchase
    2. harmonic analysis in music
 4. input -
@@ -1072,11 +1114,12 @@
    5. pipe mode is only supported with recordIO
 5. how to use -
    1. unsupervised, number of topics provide beforehand
-   2. optional test channel can be used to score - metrics used is per-log-likelihood
+   2. optional test channel can be used to score - metrics used for this -> per-log-likelihood
    3. functionally similar to NTM, but far more efficient and cheaper as it uses CPU
 6. important hyperparams -
    1. num_topics
-   2. alpha0
+   2. feature_dim - The vocabulary size of the dataset.
+   3. alpha0
       1. its an inital guess for concentration parameter
       2. smaller values give sparse topic mixture
       3. larger values (>1.0) produce uniform mixture of topics
@@ -1086,10 +1129,10 @@
 
 #### K-Nearest-Neighbors (KNN)
 
-1. plot a datapoint in the space, check waht labels n(usualyy 5) the points near this new datapoint have, th most occurring label wins
+1. plot a datapoint in the space, check what labels n has ie the points near this new datapoint have (usually n=5), the most occurring label wins
 2. supervised
 3. used for classification as well as regression
-4. calssification - find k closet points to the new datapoint and return the most frequent label
+4. classification - find k closest points to the new datapoint and return the most frequent label
 5. regression - find k closest point to the new datapoint and return the most average value
 6. input -
    1. recorIO-protobuf or csv -
@@ -1099,7 +1142,7 @@
 7. how to use -
    1. Data is sampled first
    2. sagemaker has dimensionality reduction stage -
-      1. avoid sprse data (curse of dimensionality)
+      1. avoid sparse data (curse of dimensionality)
       2. it comes at the cost of noise/accuracy
       3. "sign" or "fjlt" method is used
    3. build an index for looking up neighbors
@@ -1118,20 +1161,20 @@
 2. Data is divided into K groups, where members of group are as similar to each other as possible -
    1. meaning of "similar" is defined by us
    2. nearest distance is measured by Euclidean distance
-3. Doing this can be challenging for large dataset, hence sagemaker brings to the table WebScale K-Means Clustering algo
+3. Doing this can be challenging for large dataset, hence sagemaker brings to the table **WebScale K-Means Clustering** algo
 4. input -
    1. recordIO-protobuf or csv
    2. file or pipe mode on either
    3. train channel and test optional channel -
       1. for training use ShardedByS3Key and for test use FullReplicated
 5. how to use -
-   1. every observation iS mapped to n-dimensional space (n=nnumber of features)
+   1. every observation is mapped to n-dimensional space (n=number of features)
    2. works to optimize the center of cluster -
-      1. "extra cluster center" msy be specified to improve accuracy(these extra clusters ie 'K' get end up reduced to actual cluster number we provided ie 'k')
+      1. "extra cluster center" must be specified to improve accuracy(these extra clusters ie 'K' get end up reduced to actual cluster number we provided ie 'k')
       2. K = k*x
    3. algorithm -
       1. process of determining extra cluster center -
-         1. random - pick initial cluter center randomly, gives problems when clusters become too close too each other
+         1. random - pick initial cluster center randomly, gives problems when clusters become too close too each other
          2. k-means++ - tries to make initial clusters far apart
       2. iterate over training data and calculate cluster center
       3. Reduce clusters from K to k -
@@ -1245,7 +1288,7 @@
    3. dialog system - like chatbot
    4. industrial robots
    5. supply chain management
-   6. autonomous car
+   6. autonomous car (self driving)
 6. once the space has been explored, it yield fast performance
 7. Q-Learning
    1. It's a specific implementation of RL
@@ -1579,7 +1622,7 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 #### Amazon Fraud Detector
 
-1. upload your own historical data
+1. upload your own **historical data**
 2. builds custom models from a template you choose
 3. It has an api, we can hit and check probability of fraud
 4. applications - access risk from -
@@ -1629,9 +1672,9 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 1. Create a DNN on Mnist Numbers dataset
 2. Question - How to choose batch_size?
-3. Question - What happens when validation accuracy is less than training accuracy in each step or epoch?
-4. open ec2 instance in local terminal ssh -L 8888:localhost:8888 -i "ec2_key_pair_udemy.pem" ubuntu@ec2-3-135-228-122.us-east-2.compute.amazonaws.com
-
+3. **Question - What happens when validation accuracy is less than training accuracy in each step or epoch?**
+   **The model is trained better for known data, but for real-world data it is not good**
+4. open ec2 instance in local terminal command -  ssh -L 8888:localhost:8888 -i "ec2_key_pair_udemy.pem" ubuntu@ec2-3-135-228-122.us-east-2.compute.amazonaws.com
 
 # ML IMPLEMENTATION AND OPERATION
 
@@ -1675,7 +1718,7 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 ### SageMaker for Edge deivices
 
-Means deploying models to edge devices like smart camera for face detection, computer chip (ARM, Nvidia, intel processors) for automated car, alexa, etc
+Means deploying models to edge devices like smart camera for face detection, computer chip (ARM, Nvidia, intel processors) for automated car (self driving), alexa, etc
 
 **Question - How to do ML in edge devices?**
 
@@ -1742,8 +1785,7 @@ Means deploying models to edge devices like smart camera for face detection, com
 3. Notebooks are by default internet enabled
    1. This can be problematic if someone tries to attack
    2. If you disable internet for a notebook then for training and inference to work, make sure -
-      1. setup an interface endpoint (PrivateLink) or NAT Gateway
-      2. allow outbound connections
+      1. **setup an interface endpoint (PrivateLink) or NAT Gateway to allow outbound connections**
 4. Training and inference containers are also by default internet enabled -
    1. you can do network isolation, but it prevent s3 access, so you have to do some workaround, because sagemaker needs s3 access at all time
 
@@ -1785,13 +1827,14 @@ Means deploying models to edge devices like smart camera for face detection, com
 
 1. used for inference
 2. Lowers ml inference costs by upto 75%
-3. gpu instances are used while training, but after this, unknowingly we tend to use same instance for inference too
-4. Elastic Inference accelerators can be added alongside cpu instances - ml.eia1.medium/large/xlarge/etc
-5. EI accelerators can also be added to notebooks
-6. EI only works with deep learning frameworks like tensorflow, MXNet
-7. works with tensorflow and MXNet pre-built containers
-8. works with custom containers only if thery are built with EI enabled tensorflow or MXNet
-9. works with Image classification and Object detection algorithms
+3. **EI accelerators can be attached to CPU inference instances to accelerate deep learning inference at a fraction of the cost of using a GPU inference node.**
+4. gpu instances are used while training, but after this, unknowingly we tend to use same instance for inference too
+5. Elastic Inference accelerators can be added alongside cpu instances - ml.eia1.medium/large/xlarge/etc
+6. EI accelerators can also be added to notebooks
+7. EI only works with deep learning frameworks like tensorflow, MXNet
+8. works with tensorflow and MXNet pre-built containers
+9. works with custom containers only if thery are built with EI enabled tensorflow or MXNet
+10. works with Image classification and Object detection algorithms
 
 #### Automatic Scaling
 
@@ -1820,3 +1863,19 @@ Means deploying models to edge devices like smart camera for face detection, com
 ### Labs
 
 **Question - Why we use if __name__ == '\__main\__' function ?**
+**This code tells compiler to run the home/main script.
+Well, imagine that someone else wants to use the functions in your module in their own program. They import your module... and it starts doing its own thing!
+With the `if __name__ == "__main__"`, this doesn't happen. Your module only "does its thing" if it's run as the *main* module. Also, this script can be used as a library, in which case this code block won't be executed'**
+
+# EXAM
+
+1. Revision git notes.
+2. All practice exams
+3. AWS exam guide
+4. AWS sample question
+5. AWS practice exam
+6. Revisit the lectures or aws resources, for which you caould not get correct answer
+7. 2 mins per question
+8. flag question, which you want to revisit
+9. 3 hrs, 65 ques
+10. try to get exam cost benefit
