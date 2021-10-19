@@ -1231,8 +1231,8 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    1. recordIO-protobuf format in float32
    2. as the data is sparse, csv is not compatible with factorization machines, because we will just end up having numerous amount of columns(features), which won't be related or useful enough.
 7. how to use -
-   1. Find factors we can use to predict a classification (click or not?, purchase or not?) or regression(value finding) (predict rating), wherein a matrix is given representing some pair of things (user and items)
-   2. Whenever we want to build recommendation system thinks of Factorization Machines.
+   1. Find factors we can use to predict a classification (click or not?, purchase or not?) or regression(value finding) (prediction), wherein a matrix is given representing some pair of things (user and items)
+   2. **Whenever we want to build recommendation system thinks of Factorization Machines**.
 8. important hyperparams -
    1. initialization methods for bias, linear terms, factors
       1. uniform, normal or constant
@@ -1240,11 +1240,11 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 9. instance -
    1. training - cpu or gpu
       1. cpu is recommended
-      2. gpu is for dense data, hence check again why using FM, because FM works only with sparse data
+      2. gpu is for dense data, hence check again why using FM if you have dense data, because FM works only with sparse data
 
 #### IP Insights
 
-1. It's about finding fishy behaviour in our weblogs, or waflogs
+1. It's about finding fishy behaviour in our weblogs, or waflogs (ARD/SRD work)
 2. unsupervised learning of IP address usage patterns
 3. identifies supicious behaviour from IP addresses -
    1. identify login attempts from anomalous IP
@@ -1258,8 +1258,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    1. uses neural network to learn latent vector representations of entity and IP addresses
    2. Entities are hashed and embedded -
       1. need sufficiently large hash size
-   3. automatically generates negative samples from data while pairing entity and IP addresses
-   4. Above point is very important in examples like fraud detection, suspicious web request detection
+   3. **automatically generates negative samples from data while pairing entity and IP addresses.This point is very important in examples like fraud detection, suspicious web request detection**
 7. important hyperparams -
    1. neural params like epochs, batch_size, learning_rate, optimizer
    2. num_entity_vectors -
@@ -1279,7 +1278,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 #### Reinforcement Learning
 
 1. RF is not like other algorithms, wherein, we train the model, deploy it, then use it for classification of some items or maybe regression and get some scores from the deployed model
-2. It's about learning about a virtual environment or space and to navigate that environment in an optimal manner as we encounter some different states or conditions or situations
+2. It's about learning about a virtual environment or space and to navigate that environment in an optimal manner as we encounter some different states or conditions or situations. **Robotics**
 3. Accordingly the agent learning these things behaves.
 4. With Reinforcement Learning AI can win a lot of games
 5. Ex -
@@ -1300,13 +1299,13 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    3. when bad happens with a particular state/action pair, reduce it's Q
    4. when good happens with a particular state/action pair, increase Q
    5. Although we exploration problem here -
-      1. if we choose a path with huighest Q, we might lose lot's of correcgt path, image pacman
-      2. another apporach is use a term called epsilon, wherein choose a random number, if num  less than epsilon, don't follow Q, but choose random action.
-      3. This way, exploration for new parth never stops
+      1. if we choose a path with highest Q, we might lose lot's of correct path, imagin pacman
+      2. another approach is use a term called epsilon, wherein choose a random number, if num  less than epsilon, don't follow Q, but choose random action.
+      3. This way, exploration for new path never stops
       4. also choosing epsilon can be tricky
    6. Q-learning is also called as MarKov Decision Process , also called as Discrete Time Stochastic Control Process
 8. Framework - Tensorflow and MXNet
-9. Toolkits - Intel Coach and Ray Rllib
+9. **Toolkits - Intel Coach and Ray Rllib**
 10. Environments -
     1. MATLAB, Simulink
     2. EnergyPlus, RoboSchool, PyBullet
@@ -1335,7 +1334,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    1. learning_rate, batch_size, epochs, etc we can never be 100% sure what values are perfect
    2. There's always trial and error technique to follow which leads us to high computation charges and resource exhaustion.
    3. Hence use Automatic Model Tuning (AMT)
-   4. In AMT, provide the hyperparams and the ranges you want to try, and the metrics we are aiming optimizing for
+   4. In AMT, provide the hyperparams and the ranges you want to try, and the metrics we are aiming for optimizing the model
    5. AMT will try all the combinations and will give the best set of parameters that you can go forward with.
    6. Also, AMT is smart, it learns while on the go, hence it does not actually tries all the params, it understands which path to take and which not.
    7. Best practices -
@@ -1350,10 +1349,10 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 1. Apache Spark is a very popular framework for processing data
 2. It does what sagemaker does, But it does lot more than that as it is good in data processing
 3. It has very popular MLlib library that does machine learning at large scale
-4. So if use sagemaker + spark, you will get power of both. To do so -
-   1. preprocess data with spark (collect datam map it, reduce it, etc) returns a dataframe
-   2. invoke sagemaker + spark librabry - sagemaker_pyspark
-   3. Now insted of MLlib, use SageMakerEstimator, which works in same way
+4. So by using sagemaker + spark, you will get power of both. To do so -
+   1. preprocess data with spark (collect data, map it, reduce it, etc) returns a dataframe
+   2. (invoke sagemaker + spark librabry) ie. sagemaker_pyspark
+   3. Use SageMakerEstimator, which works in same way
       1. Some of the algos here are PCA, XGBoost, KMeans
    4. SageMakerModel to make inferences
 5. TO integrate spark and sagemaker -
@@ -1413,7 +1412,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 1. SgeMaker Autopilot is wrapped around AutoML which is automatically identifying which model and algorithm is right for our problem statement
 2. Automates -
-   1. algorithm selection
+   1. **algorithm selection**
    2. model tuning
    3. data preprocessing
    4. all infrastructure
@@ -1424,13 +1423,13 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    3. automatic model creation
    4. model notebook is avaliable for visibility and control
    5. a model leaderboard is provided which ranks a list of recommended models, from which we can pick anyone to go forward with
-   6. Deploy and moitor the model
+   6. Deploy and monitor the model
    7. refine the model from the notebook later if needed
 5. can add in human guidance or human intervention, but not a must thing
 6. can be done whole thing with or without code in SageMaker Studio or aws sdk
-7. currently it can limited problems -
+7. currently it can solve limited problems -
    1. Binary classification
-   2. multiclass claassification
+   2. multiclass classification
    3. regression
 8. Algorithm supported -
    1. Deep Learning (MLP-MultiLayerPerceptrons)
@@ -1441,8 +1440,8 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 10. Autopilot Expalinability -
     1. AWS realizes that there can be biases inside automl, which can be detected and removed with involvement of human and other resources. (For example, real estate problem solved by AutoML might use 'race' features extensively and provides prediciton as per it, this is totally WRONG)
     2. Autopilot need not be a blackbox, we must know what happens inside, so that there are no biases or false approach inside.
-    3. Autopilot instegrates with SageMaker Clarify (Clarify tells how different features contributed to each prediction)
-    4. This integration also gives transparency on fearures and biases inside the autml
+    3. **Autopilot integrates with SageMaker Clarify (Clarify tells how different features contributed to each prediction)**
+    4. This integration also gives transparency on features and biases inside the automl
     5. Also does Feature Attribution -
        1. Uses SHAP baselines / Shapley values
        2. For this the research was done using cooperative game threory
@@ -1450,32 +1449,31 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 #### SageMaker Model Monitor
 
-1. Monitors deployed models
+1. Monitors **deployed** models
 2. Alerts on cloudwatch
 3. Detect anomalies and outliers
 4. Detect new features
-5. Visulize data drift (missing data causes model changes)
+5. Visualize data drift (missing data causes model changes)
 6. No code needed
 7. SageMaker studio and a webbased dashboard used to set this up
-8. integrates with clasrify to detect biases
+8. integrates with classify to detect biases
 9. can predict future bias beforehand
-10. understand model beahviour - which features contributed to the prediction
-11. Data is stored in s3
-12. Monitoring schedules are created to run these monitor jobs periodically
-13. Metrics are shown in cloudwatch - based on this, you can take corrective measures like retrain the model or audit data. Also, you ca trigger alarms using cloudwatch notifications
-14. Integrates with Tableau, Quicksight, Tensorboard or can be visualized in SageMaker Studio
-15. Monitoring Types -
+10. **understand model behaviour - which features contributed to the prediction**Data is stored in s3
+11. Monitoring schedules are created to run these monitor jobs periodically
+12. Metrics are shown in cloudwatch - based on this, you can take corrective measures like retrain the model or audit data. Also, you can trigger alarms using cloudwatch notifications
+13. Integrates with Tableau, Quicksight, Tensorboard or can be visualized in SageMaker Studio
+14. Monitoring Types -
     1. Drift in Data quality
        1. 'quality' means the statistical properties like mean, max, std deviation, etc
        2. it is checked respective to baseline that we explicitly create when we create model monitor job
     2. Drift in model quality
-       1. checkd vs model baseline that we create while creating job
+       1. it is checked respective to model baseline that we create while creating job
        2. quality - rmse, accuracy, poc, etc
        3. quality - ground truth label (GTL means what the humans have labelled for the data vs what model has predicted)
     3. Bias drift - using Clarify
     4. Feature attribution drift -
-       1. Based on Normalized Discounted Cumulative GAin (NDCG) score
-       2. compares feature ranking (whihc feature is more important) between live vs training data
+       1. Based on Normalized Discounted Cumulative Gain (NDCG) score
+       2. compares feature ranking (which feature is more important) between live vs training data
 
 #### SageMaker Latest Features
 
@@ -1483,7 +1481,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    1. on-click models and algorithms from model zoos
    2. 150 open-source models in NLP, image classification, object detection, etc
 2. SageMaker Data Wrangler -
-   1. Data processing like import, export, transform, analyze data in SageMAker Studio
+   1. Data processing like import, export, transform, analyze data in SageMaker Studio
 3. SageMaker Feature Store -
    1. Find, analyze and share features in studio
    2. operates in 2 modes - online (low latency), offline (for training or batch inference)
@@ -1520,7 +1518,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 1. **converts speech to text**
 2. input -
-   1. flac, mp3, mp4, wav foramt in a specified language
+   1. flac, mp3, mp4, wav format in a specified language
    2. streaming audio supported -
       1. http/2 or websocket
       2. english, spanish, french only
@@ -1538,7 +1536,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 2. many voices and languages
 3. supports **lexicons** -
    1. customizing pronunciation of specific words and phrases
-   2. ex - when "w3c" is written in text, speech dhould be "world wide web consortium"
+   2. ex - when "w3c" is written in text, speech should be "world wide web consortium"
 4. supports **SSML** (Speech Synthesis Markup Language) format -
    1. an alternative to plain text
    2. gives control over breathing, emphasis, pronnunciation, whispering, speech rate, pauses, pitch
@@ -1578,7 +1576,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 3. works with any type of timerseries data -
    1. price, promotions, waflogs, etc
    2. can combine with associated data to find relationships
-4. using amazon fforecast helps - inventory planning, resource planning, financial planning
+4. helps in - inventory planning, resource planning, financial planning
 5. based on dataset groups, predictors, and forecasts
 
 #### Amazon Lex
@@ -1633,7 +1631,7 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 #### Amazon CodeGuru
 
-1. automated code reviewing
+1. **automated code reviewing**
 2. finds line of code that hurts performance, resource leaks, race conditions
 3. powered by ML
 4. currently only supports python and java
@@ -1652,11 +1650,11 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 #### Amazon Kendra
 
-1. Enterprise serach environment, basically build for large organizations and their customers
-2. It's kind of google search engine but for intra-company
+1. **Enterprise search environment**, basically build for large organizations and their customers
+2. **It's kind of google search engine but for intra-company**
 3. powered by strong nlp
 4. uses thumbs up/ thumbs down feedback mechanism to get more accurate
-5. combines data from file systems, SharePoint, instranet, sharing services (JDBC, s3) into one searchable repository
+5. combines data from file systems, SharePoint, intranet, sharing services (JDBC, s3) into one searchable repository
 6. you can do relevance tuning (filtering) to show what is more important to you like view count, last update date, etc
 7. Remember like Alexa's sister
 
@@ -1664,8 +1662,8 @@ AI powered keyboard - composes whole song from just a melody, only for education
 
 1. human review of ML predictions
 2. similar to ground truth
-3. just like ground truth, to do this job, you can access the amazon's turk workforce or hire vendors or get your own inetrnal staff
-4. builds workflows for reviewing low -confidence predictions
+3. just like ground truth, to do this job, you can access the amazon's turk workforce or hire vendors or get your own internal staff
+4. builds workflows for reviewing low confidence predictions
 5. integrates with sagemaker, textract, rekognition
 
 #### Labs
@@ -1673,7 +1671,7 @@ AI powered keyboard - composes whole song from just a melody, only for education
 1. Create a DNN on Mnist Numbers dataset
 2. Question - How to choose batch_size?
 3. **Question - What happens when validation accuracy is less than training accuracy in each step or epoch?**
-   **The model is trained better for known data, but for real-world data it is not good**
+   **The model is trained better for known data, but for real-world data it is not good. also called as overfittig**
 4. open ec2 instance in local terminal command -  ssh -L 8888:localhost:8888 -i "ec2_key_pair_udemy.pem" ubuntu@ec2-3-135-228-122.us-east-2.compute.amazonaws.com
 
 # ML IMPLEMENTATION AND OPERATION
@@ -1841,7 +1839,7 @@ Means deploying models to edge devices like smart camera for face detection, com
 1. used for inference
 2. setup a scaling policy to define target metrics, min/max capacity, cooldown periods
 3. dynamically adjusts number of production variants
-4. works in cloudwatch to monitor performance of inference mnodes and scale them as needed
+4. works in cloudwatch to monitor performance of inference nodes and scale them as needed
 5. Load testing is needed before you confirm the scaling policy
 
 #### Availability Zones
@@ -1855,7 +1853,7 @@ Means deploying models to edge devices like smart camera for face detection, com
 
 1. a way of chaining containers into one pipeline of results
 2. linear sequence of 2-5 conntainers
-3. put any combination of pretrained models in to these contianers
+3. put any combination of pretrained models in to these containers
 4. combine pre-processing, predictions, post-processing, etc in this pipeline
 5. spark ML or scikit-learn containers are used
 6. can handle real-time as well as batch transform
@@ -1865,7 +1863,17 @@ Means deploying models to edge devices like smart camera for face detection, com
 **Question - Why we use if __name__ == '\__main\__' function ?**
 **This code tells compiler to run the home/main script.
 Well, imagine that someone else wants to use the functions in your module in their own program. They import your module... and it starts doing its own thing!
-With the `if __name__ == "__main__"`, this doesn't happen. Your module only "does its thing" if it's run as the *main* module. Also, this script can be used as a library, in which case this code block won't be executed'**
+With the `if __name__ == "__main__"`, this doesn't happen. Your module only "does its thing" if it's run as the *main* module. Also, this script can be used as a library, in which case this code block won't be executed**
+
+# TODO
+
+As per application, categorize above services. So that the commons and differences of these services are better understood
+
+1. **Recommendation** system
+2. **Autonomous car**
+3. Data Processing
+4. **Realtime** applications
+5. **Pair** wise interactions
 
 # EXAM
 
@@ -1874,8 +1882,6 @@ With the `if __name__ == "__main__"`, this doesn't happen. Your module only "doe
 3. AWS exam guide
 4. AWS sample question
 5. AWS practice exam
-6. Revisit the lectures or aws resources, for which you caould not get correct answer
-7. 2 mins per question
+6. Revisit the lectures or aws resources, for which you could not get correct answer
+7. 3 hrs, 65 ques, 2 mins per question
 8. flag question, which you want to revisit
-9. 3 hrs, 65 ques
-10. try to get exam cost benefit
