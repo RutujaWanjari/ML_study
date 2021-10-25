@@ -123,35 +123,44 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 ### AWS Datastores
 
 1. Redshift -
+
    1. datawareshouse technology
    2. massively parallel sql queries to run, then use Redshift. (OLAP - Online Analytical Processing)
    3. load data from s3 OR query it from s3 using redshift spectrum
    4. provision servers in advance
    5. Data is organized in columns or tables
    6. main purpose is to do analytics
+   7. The COPY command loads data in parallel from Amazon S3, Amazon EMR, Amazon DynamoDB, or multiple data sources on remote hosts. COPY loads large amounts of data much more efficiently than using INSERT statements, and stores the data more effectively as well. So this option is the right fit for the given use case.
+   8. COPY loads large amounts of data much more efficiently than using INSERT statements, so this option is not correct.
+   9. UNLOAD is used to write the results of a Redshift query to one or more text files on Amazon S3, so this option is not correct.
 2. RDS and Aurora-
+
    1. These are relational datastores
    2. OLTP - Online Transaction Processing
    3. provision servers in advance
    4. Data is orgainized in row
    5. main purpose is to to store data
 3. Dynamodb -
+
    1. NoSQL - NotOnlySQL
       (some systems stores sql plus document data) or Not SQL (not sql only document data is stored)
    2. Useful to store ml outputs
    3. serverless
    4. provisioned read/write capacity
 4. s3 -
+
    1. object storage
    2. serverless
    3. infinite storage
    4. integration with almost all aws services
 5. elastic search -
+
    1. indexing of data
    2. provision in advance
    3. search among data points
    4. useful for analytics
 6. elastic cache
+
    1. cahing mechanism
 
 ### AWS Data pipelines
@@ -167,12 +176,11 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 ##### 06/08/2021
 
-1. Runs job as docker images
-2. Used for performing computational or etl or any kind of job in batches
-3. No need of provisioning from user. Dynamically provisioned
-4. All resources like ec2 are dynamically created as per the job
-5. User does not have to manage clusters, it is serverless (ecs fargate)
-6. Schedule batch jobs using cloudwatch or orchestrate batch jobs using AWS step functions
+1. **Runs job as docker imagesUsed for performing computational or etl or any kind of job in batches**
+2. No need of provisioning from user. Dynamically provisioned
+3. All resources like ec2 are dynamically created as per the job
+4. User does not have to manage clusters, it is serverless (ecs fargate)
+5. Schedule batch jobs using cloudwatch or orchestrate batch jobs using AWS step functions
 
 ### AWS Database Migration Service
 
@@ -307,7 +315,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 6. An EMR cluster consists of nodes -
    1. **Master node** - compulsary node, manages the cluster, single ec2 instance, monitors health of the cluster, instances used are - m4.xlarge if nodes > 50, else m4.large if nodes < 50
    2. **Code node** - compulsary node when the cluster is multi layered, runs tasks, hosts hdfs data, can be scaled up/down but with risk, instances used are - m4.large is good for performance, t2.medium for external dependency apps like webcrawler, cluster computing instances if NLP work
-   3. **Task node** - optional node, runs task, does not host data, no risk of data while scaling, only used for computational purpose, good for spot instances. (instances can be removed/added), instance same as code node plus spot instances
+   3. **Task node** - optional node, runs task, does not host data, no risk of data while scaling, only used for computational purpose, good for spot instances. (instances can be removed/added), instance same as core node plus spot instances
 7. 2 types - **transient cluster**(turn off cluster after task completion, used when task set is predefined) vs **long running cluster**(used when we dont know what to do and expect, also used in interatcive applications, terminate cluster manually after done.)
 8. Integration with ec2, cloudwatch, vpc, s3, cloudtrail, IAM, Data pipeline
 9. **EMR storage** - hdfs, emrfs (s3 or dynamo), local file system, ebs (elastic block store)
@@ -339,7 +347,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    2. Now if we say, y is an output(salary) and x is an input(age)., it means the dimension is 2
    3. But when we add more features like yrs of experience, designation, location, etc, axis increases and hence the dimension increases.
    4. More the dimensions, sparse the relevant information to predict something, more the space to look for proper solution. This results in bad output.
-   5. **To reduce dimesion, we have PCA and K-Means**
+   5. **To reduce dimension, we have PCA and K-Means**
 6. Ways of Feature Engineering -
    1. **Imputation of Missing Data**
       1. **Mean Replacement** - df.fillna(df.mean())
@@ -408,10 +416,10 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 1. Binning refers to converting numerical data into categorical like age.
 2. Instead of using all values of age field, we can convert into categories of 1-20, 21-40, 41-60, etc
-3. Above categories can be then one hot encoded to 0, 1, 2, 3
+3. **Above categories can be then one hot encoded to 0, 1, 2, 3**
 4. This technique is used when we have uncertaininity in exact measurements of datapoints.
 5. Also used when the specificity of datapoint is not very helpful in training model.
-6. Quantile binning is useful to equally balanced out the one hot classes. It automatically picks up the min-max value for creating bins or categories
+6. **Quantile binning is useful to equally balanced out the one hot classes. It automatically picks up the min-max value for creating bins or categories**
 
 ### Transforming
 
@@ -558,7 +566,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
           2. If ReLU does not work, go with Leaky ReLU
           3. If above does not work, go with PReLU, Maxout
           4. Swish should be used for deep networks
-          5. Sigmoid is used when we need multiple class outputs per neuron
+          5. Sigmoid is used when we need binary class outputs per neuron
 
 ### Convolutional Neural Network (CNN)
 
@@ -780,7 +788,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 6. **Data processing** -
    1. Requires data to be normalized (all features are weighted same)
    2. Normalizing can be done upfront by us or automatically by Linear Learner (specify in constructor)
-   3. input shuffling needed
+   3. **input shuffling needed**
 7. **Training** -
    1. multiple models are optimized parallely (like bagging)
    2. uses stochastic gradient descent (sgd)
@@ -810,7 +818,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 6. Training
    1. models are serialized and deserialized using pickle library
 7. Important Hyperparams
-   1. subsample - prevents overfitting
+   1. **subsample - prevents overfitting**
    2. eta - shrinks the stepsize, prevents overfitting
    3. gamma - minimum loss reduction to create partition, larger value means more conservative
    4. alpha - l1
@@ -882,6 +890,8 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 
 #### BlazingText
 
+Supports both supervised and unsupervised learning
+
 1. Text classification -
    1. predicts labels for sentences
    2. supervised
@@ -889,17 +899,18 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    4. used only for sentences, not entire document
 2. Word2vec
    1. creates vector representation of words
-   2. semantically similar words have vectors close to each other
-   3. used in machine translation and sentiment analysis
-   4. it helps in NLP but not an NLP algo, it's a data processing lib
-   5. It only works on individual words, not on entire sentence or document
+   2. unsupervised
+   3. **it finds semantically similar words** that have vectors close to each other
+   4. used in machine translation and sentiment analysis
+   5. it helps in NLP but not an NLP algo, it's a data processing lib
+   6. It only works on individual words, not on entire sentence or document
 3. Training input -
    1. for supervised mode, data should have \__ label __ as the first word followed by label and the sentence
    2. **for word2vec, data should be a text file with 1 sentence per line**
    3. also accepts **augmented text format** - {"source":"bhvh", "label":1}
 4. How to use -
    1. Cbow (continuous bag of words) - bag of words, order does not matter
-   2. skip-gram - n grams, order of words matters
+   2. skip-gram - n grams, order of words does not matters
    3. batch skip-gram - distributed computation over many CPUs
 5. Important hyperparams -
    1. Word2Vec-
@@ -924,13 +935,14 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 2. Embedding layer, works on entire documents
 3. Low dimensional representation of higher dimensional data
 4. It is basically word2vec, but generalized to handle things other than words
-5. It is unsupervised
-6. Applications -
+5. **it finds semantically similar objects (objects can be anything like sentence, image, etc)**
+6. It is unsupervised
+7. Applications -
    1. recommendation system,
    2. visualize clusters
    3. compute nearest neighbours of objects
    4. genre prediction
-7. inputs -
+8. inputs -
    1. data must be tokenized into integers
    2. **training data consists of pairs of tokens and/or sequence of tokens**
       1. sentence pair
@@ -938,7 +950,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
       3. customer pair
       4. label and sequence pair
       5. user and item pair
-8. how to use -
+9. how to use -
    1. process data into json lines and shuffle it
    2. train with 2 input channels, 2 encoders and 1 comparator
    3. encoder can be -
@@ -946,10 +958,10 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
       2. cnn
       3. bidirectional lstm
    4. comparator is followed by a feed forward network
-9. important hyperparams
-   1. usual deep learnign stuff - epoch, dropout, learning rate, batch_size, activation_function, epoch, optimizer, etc
-   2. enc1_network, enc2_network - for this choose hcnn, bilstm, pooled_embedding
-10. instance -
+10. important hyperparams
+    1. usual deep learnign stuff - epoch, dropout, learning rate, batch_size, activation_function, epoch, optimizer, etc
+    2. enc1_network, enc2_network - for this choose hcnn, bilstm, pooled_embedding
+11. instance -
     1. can only train on single machine
     2. cpu or gpu (multiple)
     3. can use ml.p5, ml.m5
@@ -970,7 +982,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    1. uses a CNN with Single Shot multibox Detector algorithm
       1. the base cnn can be VSG-16 or resnet-50 (cnn topologies that are already validated by the world)
    2. takes an image as input and outputs all the objects detectd with bounding box and respective scores
-   3. transfer learning mode ie incremental training ie using pretrained model as base, and then extending the model or retraining over it
+   3. **incremental training ie using pretrained model as base, and then extending the model or RETRAINING over it with new or extended dataset**
    4. uses flip, rescale, jitter on the training images to avoid overfitting
 9. important hyperparams -
    1. mini_batch_size
@@ -985,25 +997,26 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 1. Its simpler form of Object Detection
 2. It just assigns (1 or more)label to an image
 3. It does not tell all objects in the image
-4. Input -
+4. can do incremental training
+5. Input -
    1. If training from scratch, use APache MXNet RecordIO
       1. Not protobuf
       2. This is for interoperability with other deep learning frameworks
    2. Or raw jpg/png/jpeg images
    3. For image format, also feed .lst files to associate image index, class label, and path to image
    4. Augmented Manifest Image Format in Pipe mode (pipe mode is allowing data to use from s3 instead of copying all data into current code/system)
-5. how to use -
+6. how to use -
    1. under the hood it is actually a ResNet CNN
    2. full training mode - initialize network with random weights
    3. transfer learning mode -
       1. initialize network with pre-trained weights
       2. top fully connected layer is initiated with random weights
-      3. network is fine tuned with new training data
+      3. network is fine tuned with **new training data**
    4. default image size is 3-channel (RGB) 224 x 224 dimensions (ImageNet dataset)
-6. Important hyperparams -
+7. Important hyperparams -
    1. usual params of deep learning ie batch_size, optimizer, learning_rate, etc
    2. optimizer specific params - weight decay, beta1, beta2, gamma, eps
-7. instance -
+8. instance -
    1. training - gpu - multigpu and multi machine is ok, p2 or p3
    2. inference - cpu or gpu - c4, p2, p3
 
@@ -1140,14 +1153,14 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
    2. file or pipe mode in either case
    3. train channel has data and test channel emits accuracy or MSE ()
 7. how to use -
-   1. Data is sampled first
-   2. sagemaker has dimensionality reduction stage -
+   1. Data is **sampled** first
+   2. sagemaker has **dimensionality reduction** stage -
       1. avoid sparse data (curse of dimensionality)
       2. it comes at the cost of noise/accuracy
       3. "sign" or "fjlt" method is used
-   3. build an index for looking up neighbors
-   4. serialize the model
-   5. query the model for given K
+   3. **build an index** for looking up neighbors
+   4. **serialize the model**
+   5. **query the model for given K**
 8. important hyperparams -
    1. k = number of neighbors
    2. sample_size
@@ -1173,7 +1186,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
       1. "extra cluster center" must be specified to improve accuracy(these extra clusters ie 'K' get end up reduced to actual cluster number we provided ie 'k')
       2. K = k*x
    3. algorithm -
-      1. process of determining extra cluster center -
+      1. process of determining initial cluster center -
          1. random - pick initial cluster center randomly, gives problems when clusters become too close too each other
          2. k-means++ - tries to make initial clusters far apart
       2. iterate over training data and calculate cluster center
@@ -1181,9 +1194,8 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
          1. using Lloyd's method in k-means++
 6. important hyperprams -
    1. k -
-      1. choosing k is tricky
-      2. hence use elbow method - plot within-cluster sum of squares as the funciton of k, and try to find point where larger values of k are not producing any benefit and go with that
-      3. basically optimize for tightness of clusters that's what 'within-cluster sum of squares' is measuring
+      1. **choosing k is tricky hence use elbow method** - plot within-cluster sum of squares as the funciton of k, and try to find point where larger values of k are not producing any benefit and go with that
+      2. basically optimize for tightness of clusters that's what 'within-cluster sum of squares' is measuring
    2. mini_batch_size
    3. extra_center_factor ie x parameter
    4. init_method - random or k_means_plus_plus
@@ -1549,7 +1561,7 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 1. computer vision
 2. applications -
    1. facial analysis
-   2. celebrity recognition
+   2. **celebrity recognition**
    3. object and scene detection
    4. text in image detection
    5. face comparison
@@ -1584,14 +1596,14 @@ AWS Glue is an alternative to Apache NiFi - automating the flow of data between 
 1. builds conversational interface
 2. powered by same technology which is behind amazon Alexa
 3. builds natural language chatbot engine
-4. a bot is built around intents -
-   1. utterances invoke intent (ex - i want to order  pizza, so intent might be pizza order)
+4. **it can also handle speech to text**a bot is built around intents -
+5. 1. utterances invoke intent (ex - i want to order  pizza, so intent might be pizza order)
    2. to fulfill this intent a lambda function is invoked
    3. to fulfill intent extra information is needed in terms of slot -
       1. this is the way to have conversation
       2. slot can be pizza size, toppings, crust type, when to deliver
-5. can deploy to aws mobile sdk, facebook messenger, slack, twilio
-6. **Question** - how to build alexa ?
+6. can deploy to aws mobile sdk, facebook messenger, slack, twilio
+7. **Question** - how to build alexa ?
    1. use transcribe (user speech to text conversation)
    2. use lex (to get intent)
    3. use poly (to convert response text to speech)
@@ -1852,11 +1864,11 @@ Means deploying models to edge devices like smart camera for face detection, com
 ### Inference Pipelines
 
 1. a way of chaining containers into one pipeline of results
-2. linear sequence of 2-5 conntainers
+2. linear sequence of **2-15 conntainers**
 3. put any combination of pretrained models in to these containers
 4. combine pre-processing, predictions, post-processing, etc in this pipeline
 5. spark ML or scikit-learn containers are used
-6. can handle real-time as well as batch transform
+6. **can handle real-time as well as batch transform**
 
 ### Labs
 
